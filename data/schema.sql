@@ -13,6 +13,7 @@ CREATE TABLE equipe(
 CREATE TABLE fila(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
     id_equipe BIGINT UNSIGNED NOT NULL,
+    versao BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_equipe) REFERENCES equipe(id)
 );
@@ -21,6 +22,7 @@ CREATE TABLE atendente(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
     nome_de_usuario VARCHAR(100) NOT NULL,
     id_equipe BIGINT UNSIGNED NOT NULL,
+    versao BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_equipe) REFERENCES equipe(id)
 );
@@ -32,6 +34,7 @@ CREATE TABLE solicitacao(
     assunto VARCHAR(25) NOT NULL,
     id_fila BIGINT UNSIGNED NOT NULL,
     id_atendente BIGINT UNSIGNED,
+    versao BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_fila) REFERENCES fila(id),
     FOREIGN KEY(id_atendente) REFERENCES atendente(id)
