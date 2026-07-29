@@ -1,0 +1,41 @@
+DROP DATABASE IF EXISTS bd_desafio_flowpay;
+
+CREATE DATABASE IF NOT EXISTS bd_desafio_flowpay;
+
+USE bd_desafio_flowpay;
+
+CREATE TABLE equipe(
+	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
+    categoria VARCHAR(15) NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE fila(
+	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
+    id_equipe BIGINT UNSIGNED NOT NULL,
+    versao BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(id_equipe) REFERENCES equipe(id)
+);
+
+CREATE TABLE atendente(
+	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
+    nome_de_usuario VARCHAR(100) NOT NULL,
+    id_equipe BIGINT UNSIGNED NOT NULL,
+    versao BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(id_equipe) REFERENCES equipe(id)
+);
+
+CREATE TABLE solicitacao(
+	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
+    referencia_conversa VARCHAR(100) UNIQUE NOT NULL,
+    status_solicitacao VARCHAR(14) NOT NULL,
+    assunto VARCHAR(25) NOT NULL,
+    id_fila BIGINT UNSIGNED NOT NULL,
+    id_atendente BIGINT UNSIGNED,
+    versao BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(id_fila) REFERENCES fila(id),
+    FOREIGN KEY(id_atendente) REFERENCES atendente(id)
+);
