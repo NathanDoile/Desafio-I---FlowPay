@@ -3,6 +3,7 @@ package br.com.ubots.flowpay.domain;
 import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -17,7 +18,8 @@ public class Solicitacao {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Id
+    @NaturalId
+    @Column(unique = true, nullable = false)
     private Long referenciaConversa;
 
     @Enumerated(STRING)
