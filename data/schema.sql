@@ -29,7 +29,7 @@ CREATE TABLE atendente(
 
 CREATE TABLE solicitacao(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
-    referencia_conversa VARCHAR(100) UNIQUE NOT NULL,
+    referencia_conversa BIGINT UNSIGNED UNIQUE NOT NULL,
     status_solicitacao VARCHAR(14) NOT NULL,
     assunto VARCHAR(25) NOT NULL,
     id_fila BIGINT UNSIGNED NOT NULL,
