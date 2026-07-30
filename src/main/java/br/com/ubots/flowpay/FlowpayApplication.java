@@ -8,7 +8,7 @@ import org.springframework.resilience.annotation.EnableResilientMethods;
 @EnableResilientMethods
 public class FlowpayApplication {
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
 		SpringApplication.run(FlowpayApplication.class, args);
 	}
 
