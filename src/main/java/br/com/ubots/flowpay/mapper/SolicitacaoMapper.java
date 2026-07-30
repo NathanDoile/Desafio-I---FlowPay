@@ -5,6 +5,8 @@ import br.com.ubots.flowpay.domain.Solicitacao;
 
 public class SolicitacaoMapper {
 
+    private SolicitacaoMapper(){}
+
     public static Solicitacao toEntity(CriarSolicitacaoRequest request) {
 
         return Solicitacao
