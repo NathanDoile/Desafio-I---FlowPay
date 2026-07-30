@@ -33,6 +33,7 @@
             **/config/**/*,
             **/controller/**/*,
             **/exception/**/*,
+            **/mapper/**/*,
             **/*/ProjetoApplication.java
         </sonar.coverage.exclusions>
     </properties>
@@ -124,6 +125,7 @@
                                 <exclude>**/config/**/*</exclude>
                                 <exclude>**/controller/**/*</exclude>
                                 <exclude>**/exception/**/*</exclude>
+                                <exclude>**/mapper/**/*</exclude>
                                 <exclude>**/*/ProjetoApplication.java</exclude>
                             </excludes>
                         </configuration>
