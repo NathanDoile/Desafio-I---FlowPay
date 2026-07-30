@@ -24,7 +24,7 @@ jobs:
           cache: maven
 
       - name: Compilar e Rodar Testes com Maven
-        run: mvn -B clean verify -f pom.xml -DskipTests
+        run: mvn -B clean verify -f pom.xml
 
       - name: Analisar com SonarCloud
         env:
