@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.RECUSADO_POR_FILA_ESPERA_CHEIA;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -28,7 +29,7 @@ class ValidaReferenciaConversaServiceTest {
 
         Long referenciaConversa = 202607300000001L;
 
-        when(solicitacaoRepository.existsByReferenciaConversa(referenciaConversa)).thenReturn(true);
+        when(solicitacaoRepository.existsByReferenciaConversaAndStatusSolicitacaoNot(referenciaConversa, RECUSADO_POR_FILA_ESPERA_CHEIA)).thenReturn(true);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> tested.jaExiste(referenciaConversa));
 
@@ -42,7 +43,7 @@ class ValidaReferenciaConversaServiceTest {
 
         Long referenciaConversa = 202607300000001L;
 
-        when(solicitacaoRepository.existsByReferenciaConversa(referenciaConversa)).thenReturn(false);
+        when(solicitacaoRepository.existsByReferenciaConversaAndStatusSolicitacaoNot(referenciaConversa, RECUSADO_POR_FILA_ESPERA_CHEIA)).thenReturn(false);
 
         assertDoesNotThrow(() -> tested.jaExiste(referenciaConversa));
     }

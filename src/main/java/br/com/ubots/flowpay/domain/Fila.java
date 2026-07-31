@@ -17,6 +17,8 @@ public class Fila {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    private boolean isCheia;
+
     @Version
     private Long versao;
 
