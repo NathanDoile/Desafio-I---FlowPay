@@ -27,7 +27,11 @@ import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.deTexto;
 import static br.com.ubots.flowpay.domain.enums.Categoria.OUTROS_ASSUNTOS;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EncaminharSolicitacaoParaFilaServiceTest {
