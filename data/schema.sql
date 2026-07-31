@@ -32,7 +32,7 @@ CREATE TABLE solicitacao(
     referencia_conversa BIGINT UNSIGNED UNIQUE NOT NULL,
     status_solicitacao VARCHAR(14) NOT NULL,
     assunto VARCHAR(25) NOT NULL,
-    id_fila BIGINT UNSIGNED NOT NULL,
+    id_fila BIGINT UNSIGNED,
     id_atendente BIGINT UNSIGNED,
     versao BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY(id),
