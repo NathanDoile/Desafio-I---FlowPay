@@ -23,11 +23,11 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    private final String PARAMETRO_TIMESTAMP = "timestamp";
-    private final String PARAMETRO_STATUS = "status";
-    private final String PARAMETRO_ERROR = "error";
-    private final String PARAMETRO_MESSAGE = "message";
-    private final String PARAMETRO_PATH = "path";
+    private static final String PARAMETRO_TIMESTAMP = "timestamp";
+    private static final String PARAMETRO_STATUS = "status";
+    private static final String PARAMETRO_ERROR = "error";
+    private static final String PARAMETRO_MESSAGE = "message";
+    private static final String PARAMETRO_PATH = "path";
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex,
