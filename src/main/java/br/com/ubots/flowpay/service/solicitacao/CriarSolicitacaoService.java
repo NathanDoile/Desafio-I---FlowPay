@@ -3,6 +3,7 @@ package br.com.ubots.flowpay.service.solicitacao;
 import br.com.ubots.flowpay.controller.request.CriarSolicitacaoRequest;
 import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
+import br.com.ubots.flowpay.service.fila.EncaminharSolicitacaoParaFilaService;
 import br.com.ubots.flowpay.service.validator.ValidaReferenciaConversaService;
 import br.com.ubots.flowpay.validator.ValidaAssuntoSolicitacaoValidator;
 import jakarta.transaction.Transactional;
@@ -24,13 +25,14 @@ public class CriarSolicitacaoService {
 
     private final SolicitacaoRepository solicitacaoRepository;
 
+    private final EncaminharSolicitacaoParaFilaService encaminharSolicitacaoParaFilaService;
+
     @Retryable(
             includes = ObjectOptimisticLockingFailureException.class,
             maxRetries = 3,
             delay = 200,
             multiplier = 2.0
     )
-    @Transactional
     public void criar(CriarSolicitacaoRequest request) {
 
         validaReferenciaConversaService.jaExiste(request.getReferenciaConversa());
@@ -40,5 +42,7 @@ public class CriarSolicitacaoService {
         solicitacao.setStatusSolicitacao(SOLICITADO);
 
         solicitacaoRepository.save(solicitacao);
+
+        encaminharSolicitacaoParaFilaService.encaminharParaFila(solicitacao);
     }
 }

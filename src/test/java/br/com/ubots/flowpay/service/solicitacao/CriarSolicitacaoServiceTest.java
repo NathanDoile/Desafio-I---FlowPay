@@ -3,6 +3,7 @@ package br.com.ubots.flowpay.service.solicitacao;
 import br.com.ubots.flowpay.controller.request.CriarSolicitacaoRequest;
 import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
+import br.com.ubots.flowpay.service.fila.EncaminharSolicitacaoParaFilaService;
 import br.com.ubots.flowpay.service.validator.ValidaReferenciaConversaService;
 import br.com.ubots.flowpay.validator.ValidaAssuntoSolicitacaoValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +37,9 @@ class CriarSolicitacaoServiceTest {
     @Mock
     private SolicitacaoRepository solicitacaoRepository;
 
+    @Mock
+    private EncaminharSolicitacaoParaFilaService encaminharSolicitacaoParaFilaService;
+
     @Captor
     private ArgumentCaptor<Solicitacao> solicitacaoCaptor;
 
@@ -52,6 +56,8 @@ class CriarSolicitacaoServiceTest {
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
 
         Solicitacao response = solicitacaoCaptor.getValue();
+
+        verify(encaminharSolicitacaoParaFilaService).encaminharParaFila(response);
 
         assertEquals(request.getReferenciaConversa(), response.getReferenciaConversa());
         assertEquals(SOLICITADO, response.getStatusSolicitacao());
@@ -71,6 +77,7 @@ class CriarSolicitacaoServiceTest {
         verify(validaReferenciaConversaService).jaExiste(request.getReferenciaConversa());
         verify(validaAssuntoSolicitacaoValidator, never()).assuntoValido(any(String.class));
         verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
+        verify(encaminharSolicitacaoParaFilaService, never()).encaminharParaFila(any(Solicitacao.class));
     }
 
     @Test
@@ -86,5 +93,6 @@ class CriarSolicitacaoServiceTest {
         verify(validaReferenciaConversaService).jaExiste(request.getReferenciaConversa());
         verify(validaAssuntoSolicitacaoValidator).assuntoValido(request.getAssunto());
         verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
+        verify(encaminharSolicitacaoParaFilaService, never()).encaminharParaFila(any(Solicitacao.class));
     }
 }
