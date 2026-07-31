@@ -19,6 +19,8 @@ public class Atendente {
 
     private String nomeDeUsuario;
 
+    private boolean isCheio;
+
     @Version
     private Long versao;
 

@@ -8,8 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_FILA;
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.SOLICITADO;
+import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.*;
 import static br.com.ubots.flowpay.factory.SolicitacaoFactory.solicitacao;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -26,7 +25,7 @@ class ValidaStatusSolicitacaoValidatorTest {
 
         Solicitacao solicitacao = solicitacao(EM_FILA);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> tested.emFila(solicitacao));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> tested.emSolicitacao(solicitacao));
 
         assertEquals(BAD_REQUEST, exception.getStatusCode());
         assertEquals("Solicitação não está aguardando para entrar em uma fila, " +
@@ -38,6 +37,27 @@ class ValidaStatusSolicitacaoValidatorTest {
     void naoDeveDarErroSeSolicitacaoStatusSolicitado(){
 
         Solicitacao solicitacao = solicitacao(SOLICITADO);
+
+        assertDoesNotThrow(() -> tested.emSolicitacao(solicitacao));
+    }
+
+    @Test
+    @DisplayName("Deve dar erro se solicitacao tiver status diferente de EM_FILA")
+    void deveDarErroSeSolicitacaoStatusDiferenteEmFila(){
+
+        Solicitacao solicitacao = solicitacao(EM_ATENDIMENTO);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> tested.emFila(solicitacao));
+
+        assertEquals(BAD_REQUEST, exception.getStatusCode());
+        assertEquals("A solicitação não está na fila para distribuição.", exception.getReason());
+    }
+
+    @Test
+    @DisplayName("Não deve dar erro se solicitacao tiver status  EM_FILA")
+    void naoDeveDarErroSeSolicitacaoStatusEmFila(){
+
+        Solicitacao solicitacao = solicitacao(EM_FILA);
 
         assertDoesNotThrow(() -> tested.emFila(solicitacao));
     }

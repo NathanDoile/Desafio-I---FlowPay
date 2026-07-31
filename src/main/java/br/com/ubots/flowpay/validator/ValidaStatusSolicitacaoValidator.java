@@ -12,14 +12,14 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class ValidaStatusSolicitacaoValidator {
 
 
-    public void emAtendimento(Solicitacao solicitacao) {
+    public void emFila(Solicitacao solicitacao) {
 
         if (!solicitacao.getStatusSolicitacao().equals(EM_FILA)) {
             throw new ResponseStatusException(BAD_REQUEST, "A solicitação não está na fila para distribuição.");
         }
     }
 
-    public void emFila(Solicitacao solicitacao) {
+    public void emSolicitacao(Solicitacao solicitacao) {
 
         if(!solicitacao.getStatusSolicitacao().equals(SOLICITADO)){
             throw new ResponseStatusException(BAD_REQUEST, "Solicitação não está aguardando para entrar em uma fila, " +

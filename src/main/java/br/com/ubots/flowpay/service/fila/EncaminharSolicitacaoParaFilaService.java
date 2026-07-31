@@ -35,7 +35,7 @@ public class EncaminharSolicitacaoParaFilaService {
 
     public void encaminharParaFila(Solicitacao solicitacao){
 
-        validaStatusSolicitacaoValidator.emFila(solicitacao);
+        validaStatusSolicitacaoValidator.emSolicitacao(solicitacao);
 
         AssuntoSolicitacao assuntoSolicitacao = deTexto(solicitacao.getAssunto());
 
