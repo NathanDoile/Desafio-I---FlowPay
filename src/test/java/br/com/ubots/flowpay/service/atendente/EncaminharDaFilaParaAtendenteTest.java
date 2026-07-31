@@ -98,6 +98,47 @@ class EncaminharDaFilaParaAtendenteTest {
     }
 
     @Test
+    @DisplayName("Deve encaminhar uma solicitação para um atendente e lotar ele")
+    void deveEncaminharSolicitacaoParaAtendenteELotarEle(){
+
+        Equipe equipe = equipe(CARTAO);
+
+        Fila fila = fila();
+
+        Solicitacao solicitacao = SolicitacaoFactory.solicitacao(EM_FILA);
+        solicitacao.setFila(fila);
+
+        fila.getSolicitacoes().add(solicitacao);
+
+        Atendente atendente = atendente();
+        atendente.getSolicitacoes().add(Solicitacao.builder().build());
+        atendente.getSolicitacoes().add(Solicitacao.builder().build());
+
+        equipe.setFila(fila);
+        equipe.getAtendentes().add(atendente);
+
+        tested.encaminharParaAtendente(equipe);
+
+        verify(validaFilaDaEquipeValidator).possuiFila(equipe);
+        verify(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        verify(equipeRepository).save(equipeCaptor.capture());
+        verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
+        verify(atendenteRepository).save(atendenteCaptor.capture());
+
+        Equipe equipeResponse = equipeCaptor.getValue();
+        Solicitacao solicitacaoResponse = solicitacaoCaptor.getValue();
+        Atendente atendenteResponse = atendenteCaptor.getValue();
+
+        assertFalse(equipeResponse.getFila().getSolicitacoes().contains(solicitacao));
+        assertFalse(equipeResponse.getFila().isCheia());
+        assertEquals(EM_ATENDIMENTO, solicitacaoResponse.getStatusSolicitacao());
+        assertEquals(atendente, solicitacaoResponse.getAtendente());
+        assertNull(solicitacaoResponse.getFila());
+        assertTrue(atendenteResponse.getSolicitacoes().contains(solicitacao));
+        assertTrue(atendenteResponse.isCheio());
+    }
+
+    @Test
     @DisplayName("Não deve encaminhar solicitação se não houver nenhuma na fila da equipe")
     void naoDeveEncaminharSolicitacaoSeNaoHouverNenhumaNaFila(){
 
