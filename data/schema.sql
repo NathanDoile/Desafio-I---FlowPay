@@ -13,6 +13,7 @@ CREATE TABLE equipe(
 CREATE TABLE fila(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
     id_equipe BIGINT UNSIGNED NOT NULL,
+    is_cheia BOOLEAN NOT NULL,
     versao BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_equipe) REFERENCES equipe(id)
@@ -29,8 +30,8 @@ CREATE TABLE atendente(
 
 CREATE TABLE solicitacao(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
-    referencia_conversa BIGINT UNSIGNED UNIQUE NOT NULL,
-    status_solicitacao VARCHAR(14) NOT NULL,
+    referencia_conversa BIGINT UNSIGNED NOT NULL,
+    status_solicitacao VARCHAR(30) NOT NULL,
     assunto VARCHAR(25) NOT NULL,
     id_fila BIGINT UNSIGNED,
     id_atendente BIGINT UNSIGNED,
