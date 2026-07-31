@@ -6,7 +6,6 @@ import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.fila.EncaminharSolicitacaoParaFilaService;
 import br.com.ubots.flowpay.service.validator.ValidaReferenciaConversaService;
 import br.com.ubots.flowpay.validator.ValidaAssuntoSolicitacaoValidator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.resilience.annotation.Retryable;
