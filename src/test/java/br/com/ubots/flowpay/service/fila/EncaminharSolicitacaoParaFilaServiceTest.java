@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.deTexto;
+import static br.com.ubots.flowpay.domain.enums.Categoria.OUTROS_ASSUNTOS;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -83,6 +84,43 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         assertEquals(equipe.getFila().getId(), solicitacaoResponse.getFila().getId());
         assertEquals(solicitacao, filaResponse.getSolicitacoes().get(0));
         assertFalse(filaResponse.isCheia());
+    }
+
+    @Test
+    @DisplayName("Deve ser encaminhado a solicitacao para a fila e ficar cheia")
+    void deveEncaminharSolicitacaoParaFilaEFicarCheia(){
+
+        Solicitacao solicitacao = SolicitacaoFactory.solicitacao(SOLICITADO);
+
+        solicitacao.setAssunto("Inválido");
+
+        Categoria time = OUTROS_ASSUNTOS;
+
+        Equipe equipe = EquipeFactory.equipe(time);
+
+        Fila fila = FilaFactory.fila();
+        fila.getSolicitacoes().add(Solicitacao.builder().build());
+        fila.getSolicitacoes().add(Solicitacao.builder().build());
+
+        equipe.setFila(fila);
+
+        when(equipeRepository.findByCategoria(time.getDescricao())).thenReturn(equipe);
+
+        tested.encaminharParaFila(solicitacao);
+
+        verify(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        verify(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
+        verify(equipeRepository).findByCategoria(time.getDescricao());
+        verify(filaRepository).save(filaCaptor.capture());
+        verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
+
+        Fila filaResponse = filaCaptor.getValue();
+        Solicitacao solicitacaoResponse = solicitacaoCaptor.getValue();
+
+        assertEquals(EM_FILA, solicitacaoResponse.getStatusSolicitacao());
+        assertEquals(equipe.getFila().getId(), solicitacaoResponse.getFila().getId());
+        assertEquals(solicitacao, filaResponse.getSolicitacoes().get(2));
+        assertTrue(filaResponse.isCheia());
     }
 
     @Test

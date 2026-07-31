@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.deTexto;
+import static br.com.ubots.flowpay.domain.enums.Categoria.OUTROS_ASSUNTOS;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_FILA;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.RECUSADO_POR_FILA_ESPERA_CHEIA;
 
@@ -38,7 +39,7 @@ public class EncaminharSolicitacaoParaFilaService {
 
         AssuntoSolicitacao assuntoSolicitacao = deTexto(solicitacao.getAssunto());
 
-        Categoria time = Categoria.valueOf(assuntoSolicitacao.toString());
+        Categoria time = assuntoSolicitacao != null ? Categoria.valueOf(assuntoSolicitacao.toString()) : OUTROS_ASSUNTOS;
 
         Equipe equipe = equipeRepository.findByCategoria(time.getDescricao());
 
