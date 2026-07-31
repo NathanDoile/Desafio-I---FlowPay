@@ -28,7 +28,7 @@ class ValidaOcupacaoFilaValidatorTest {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> tested.filaCheia(fila));
 
         assertEquals(SERVICE_UNAVAILABLE, exception.getStatusCode());
-        assertEquals("Fila se solicitações cheia, tente novamente mais tarde.", exception.getReason());
+        assertEquals("Fila de solicitações cheia, tente novamente mais tarde.", exception.getReason());
     }
 
     @Test

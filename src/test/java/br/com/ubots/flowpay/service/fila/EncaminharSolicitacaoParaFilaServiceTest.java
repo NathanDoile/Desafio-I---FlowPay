@@ -75,7 +75,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
 
         tested.encaminharParaFila(solicitacao);
 
-        verify(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        verify(validaStatusSolicitacaoValidator).emSolicitacao(solicitacao);
         verify(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
         verify(equipeRepository).findByCategoria(time.getDescricao());
         verify(filaRepository).save(filaCaptor.capture());
@@ -112,7 +112,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
 
         tested.encaminharParaFila(solicitacao);
 
-        verify(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        verify(validaStatusSolicitacaoValidator).emSolicitacao(solicitacao);
         verify(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
         verify(equipeRepository).findByCategoria(time.getDescricao());
         verify(filaRepository).save(filaCaptor.capture());
@@ -133,11 +133,11 @@ class EncaminharSolicitacaoParaFilaServiceTest {
 
         Solicitacao solicitacao = SolicitacaoFactory.solicitacao(SOLICITADO);
 
-        doThrow(ResponseStatusException.class).when(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        doThrow(ResponseStatusException.class).when(validaStatusSolicitacaoValidator).emSolicitacao(solicitacao);
 
         assertThrows(ResponseStatusException.class, () -> tested.encaminharParaFila(solicitacao));
 
-        verify(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        verify(validaStatusSolicitacaoValidator).emSolicitacao(solicitacao);
         verify(validaOcupacaoFilaValidator, never()).filaCheia(any(Fila.class));
         verify(equipeRepository, never()).findByCategoria(any(String.class));
         verify(filaRepository, never()).save(any(Fila.class));
@@ -165,7 +165,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
 
         assertThrows(ResponseStatusException.class, () -> tested.encaminharParaFila(solicitacao));
 
-        verify(validaStatusSolicitacaoValidator).emFila(solicitacao);
+        verify(validaStatusSolicitacaoValidator).emSolicitacao(solicitacao);
         verify(equipeRepository).findByCategoria(time.getDescricao());
         verify(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());

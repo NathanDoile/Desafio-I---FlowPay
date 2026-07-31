@@ -23,6 +23,7 @@ CREATE TABLE atendente(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
     nome_de_usuario VARCHAR(100) NOT NULL,
     id_equipe BIGINT UNSIGNED NOT NULL,
+    is_cheio BOOLEAN NOT NULL,
     versao BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_equipe) REFERENCES equipe(id)

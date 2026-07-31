@@ -12,7 +12,7 @@ public class ValidaOcupacaoFilaValidator {
     public void filaCheia(Fila fila) {
 
         if(fila.isCheia()){
-            throw new ResponseStatusException(SERVICE_UNAVAILABLE, "Fila se solicitações cheia, tente novamente mais tarde.");
+            throw new ResponseStatusException(SERVICE_UNAVAILABLE, "Fila de solicitações cheia, tente novamente mais tarde.");
         }
     }
 }
