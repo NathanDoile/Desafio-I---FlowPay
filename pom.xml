@@ -34,7 +34,7 @@
             **/config/**/*,
             **/controller/**/*,
             **/exception/**/*,
-            **/*/ProjetoApplication.java
+            **/*/FlowpayApplication.java
         </sonar.coverage.exclusions>
     </properties>
     <dependencies>
@@ -125,7 +125,7 @@
                                 <exclude>**/config/**/*</exclude>
                                 <exclude>**/controller/**/*</exclude>
                                 <exclude>**/exception/**/*</exclude>
-                                <exclude>**/*/ProjetoApplication.java</exclude>
+                                <exclude>**/*/FlowpayApplication.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>

@@ -12,17 +12,22 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.time.LocalDate.now;
+import static br.com.ubots.flowpay.helper.DateNow.now;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
+
+    private final String PARAMETRO_TIMESTAMP = "timestamp";
+    private final String PARAMETRO_STATUS = "status";
+    private final String PARAMETRO_ERROR = "error";
+    private final String PARAMETRO_MESSAGE = "message";
+    private final String PARAMETRO_PATH = "path";
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex,
@@ -36,11 +41,11 @@ public class ApiExceptionHandler {
         }
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", now());
-        body.put("status", statusCode.value());
-        body.put("error", errorPhrase);
-        body.put("message", ex.getReason());
-        body.put("path", request.getServletPath());
+        body.put(PARAMETRO_TIMESTAMP, now());
+        body.put(PARAMETRO_STATUS, statusCode.value());
+        body.put(PARAMETRO_ERROR, errorPhrase);
+        body.put(PARAMETRO_MESSAGE, ex.getReason());
+        body.put(PARAMETRO_PATH, request.getServletPath());
 
         return new ResponseEntity<>(body, statusCode);
     }
@@ -53,11 +58,11 @@ public class ApiExceptionHandler {
         String message = extrairErro(ex);
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", now());
-        body.put("status", status.value());
-        body.put("error", status.getReasonPhrase());
-        body.put("message", message);
-        body.put("path", request.getServletPath());
+        body.put(PARAMETRO_TIMESTAMP, now());
+        body.put(PARAMETRO_STATUS, status.value());
+        body.put(PARAMETRO_ERROR, status.getReasonPhrase());
+        body.put(PARAMETRO_MESSAGE, message);
+        body.put(PARAMETRO_PATH, request.getServletPath());
 
         return new ResponseEntity<>(body, status);
     }
@@ -71,11 +76,11 @@ public class ApiExceptionHandler {
         String message = "Os dados foram alterados por outro usuário simultaneamente. Recarregue a página ou tente novamente mais tarde.";
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", now());
-        body.put("status", status.value());
-        body.put("error", status.getReasonPhrase());
-        body.put("message", message);
-        body.put("path", request.getServletPath());
+        body.put(PARAMETRO_TIMESTAMP, now());
+        body.put(PARAMETRO_STATUS, status.value());
+        body.put(PARAMETRO_ERROR, status.getReasonPhrase());
+        body.put(PARAMETRO_MESSAGE, message);
+        body.put(PARAMETRO_PATH, request.getServletPath());
 
         return new ResponseEntity<>(body, status);
     }
