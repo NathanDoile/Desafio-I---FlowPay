@@ -11,6 +11,8 @@ import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.validator.ValidaOcupacaoFilaValidator;
 import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +35,12 @@ public class EncaminharSolicitacaoParaFilaService {
 
     private final SolicitacaoRepository solicitacaoRepository;
 
+    @Retryable(
+            includes = ObjectOptimisticLockingFailureException.class,
+            maxRetries = 3,
+            delay = 200,
+            multiplier = 2.0
+    )
     public void encaminharParaFila(Solicitacao solicitacao){
 
         validaStatusSolicitacaoValidator.emSolicitacao(solicitacao);
