@@ -11,6 +11,7 @@ import br.com.ubots.flowpay.factory.SolicitacaoFactory;
 import br.com.ubots.flowpay.repository.EquipeRepository;
 import br.com.ubots.flowpay.repository.FilaRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
+import br.com.ubots.flowpay.service.atendente.EncaminharDaFilaParaAtendente;
 import br.com.ubots.flowpay.validator.ValidaOcupacaoFilaValidator;
 import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -54,6 +55,9 @@ class EncaminharSolicitacaoParaFilaServiceTest {
     @Mock
     private SolicitacaoRepository solicitacaoRepository;
 
+    @Mock
+    private EncaminharDaFilaParaAtendente encaminharDaFilaParaAtendente;
+
     @Captor
     private ArgumentCaptor<Solicitacao> solicitacaoCaptor;
 
@@ -80,6 +84,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         verify(equipeRepository).findByCategoria(time.getDescricao());
         verify(filaRepository).save(filaCaptor.capture());
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
+        verify(encaminharDaFilaParaAtendente).encaminharParaAtendente(equipe);
 
         Fila filaResponse = filaCaptor.getValue();
         Solicitacao solicitacaoResponse = solicitacaoCaptor.getValue();
@@ -117,6 +122,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         verify(equipeRepository).findByCategoria(time.getDescricao());
         verify(filaRepository).save(filaCaptor.capture());
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
+        verify(encaminharDaFilaParaAtendente).encaminharParaAtendente(equipe);
 
         Fila filaResponse = filaCaptor.getValue();
         Solicitacao solicitacaoResponse = solicitacaoCaptor.getValue();
@@ -142,6 +148,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         verify(equipeRepository, never()).findByCategoria(any(String.class));
         verify(filaRepository, never()).save(any(Fila.class));
         verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
+        verify(encaminharDaFilaParaAtendente, never()).encaminharParaAtendente(any(Equipe.class));
     }
 
     @Test
@@ -170,6 +177,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         verify(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
         verify(filaRepository, never()).save(any(Fila.class));
+        verify(encaminharDaFilaParaAtendente, never()).encaminharParaAtendente(any(Equipe.class));
 
         Solicitacao response = solicitacaoCaptor.getValue();
 
