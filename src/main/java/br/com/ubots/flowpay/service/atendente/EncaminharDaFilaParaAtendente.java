@@ -10,6 +10,8 @@ import br.com.ubots.flowpay.validator.ValidaFilaDaEquipeValidator;
 import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,12 @@ public class EncaminharDaFilaParaAtendente {
 
     private final AtendenteRepository atendenteRepository;
 
+    @Retryable(
+            includes = ObjectOptimisticLockingFailureException.class,
+            maxRetries = 3,
+            delay = 200,
+            multiplier = 2.0
+    )
     @Transactional
     public void encaminharParaAtendente(Equipe equipe){
 

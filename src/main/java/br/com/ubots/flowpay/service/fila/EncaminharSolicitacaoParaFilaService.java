@@ -8,6 +8,7 @@ import br.com.ubots.flowpay.domain.enums.Categoria;
 import br.com.ubots.flowpay.repository.EquipeRepository;
 import br.com.ubots.flowpay.repository.FilaRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
+import br.com.ubots.flowpay.service.atendente.EncaminharDaFilaParaAtendente;
 import br.com.ubots.flowpay.validator.ValidaOcupacaoFilaValidator;
 import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ public class EncaminharSolicitacaoParaFilaService {
     private final FilaRepository filaRepository;
 
     private final SolicitacaoRepository solicitacaoRepository;
+
+    private final EncaminharDaFilaParaAtendente encaminharDaFilaParaAtendente;
 
     @Retryable(
             includes = ObjectOptimisticLockingFailureException.class,
@@ -77,5 +80,6 @@ public class EncaminharSolicitacaoParaFilaService {
         solicitacaoRepository.save(solicitacao);
         filaRepository.save(fila);
 
+        encaminharDaFilaParaAtendente.encaminharParaAtendente(equipe);
     }
 }
