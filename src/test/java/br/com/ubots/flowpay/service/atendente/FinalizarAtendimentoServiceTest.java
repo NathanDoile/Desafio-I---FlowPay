@@ -3,7 +3,6 @@ package br.com.ubots.flowpay.service.atendente;
 import br.com.ubots.flowpay.domain.Atendente;
 import br.com.ubots.flowpay.domain.Equipe;
 import br.com.ubots.flowpay.domain.Solicitacao;
-import br.com.ubots.flowpay.domain.enums.Categoria;
 import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
 import br.com.ubots.flowpay.repository.AtendenteRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
@@ -25,7 +24,11 @@ import static br.com.ubots.flowpay.factory.AtendenteFactory.atendente;
 import static br.com.ubots.flowpay.factory.EquipeFactory.equipe;
 import static br.com.ubots.flowpay.factory.SolicitacaoFactory.solicitacao;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FinalizarAtendimentoServiceTest {
