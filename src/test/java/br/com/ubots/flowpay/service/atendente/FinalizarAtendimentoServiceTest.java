@@ -1,6 +1,7 @@
 package br.com.ubots.flowpay.service.atendente;
 
 import br.com.ubots.flowpay.domain.Atendente;
+import br.com.ubots.flowpay.domain.Equipe;
 import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
 import br.com.ubots.flowpay.repository.AtendenteRepository;
@@ -16,12 +17,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import static br.com.ubots.flowpay.domain.enums.Categoria.CARTAO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_ATENDIMENTO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.FINALIZADO;
 import static br.com.ubots.flowpay.factory.AtendenteFactory.atendente;
+import static br.com.ubots.flowpay.factory.EquipeFactory.equipe;
 import static br.com.ubots.flowpay.factory.SolicitacaoFactory.solicitacao;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FinalizarAtendimentoServiceTest {
@@ -38,6 +45,9 @@ class FinalizarAtendimentoServiceTest {
     @Mock
     private AtendenteRepository atendenteRepository;
 
+    @Mock
+    private EncaminharDaFilaParaAtendente encaminharDaFilaParaAtendente;
+
     @Captor
     private ArgumentCaptor<Solicitacao> solicitacaoCaptor;
 
@@ -52,7 +62,10 @@ class FinalizarAtendimentoServiceTest {
 
         Solicitacao solicitacao = solicitacao(EM_ATENDIMENTO);
         Atendente atendente = atendente();
+        Equipe equipe = equipe(CARTAO);
+
         solicitacao.setAtendente(atendente);
+        atendente.setEquipe(equipe);
 
         when(solicitacaoRepository.findByIdAndStatusSolicitacao(id, EM_ATENDIMENTO)).thenReturn(solicitacao);
 
@@ -62,6 +75,7 @@ class FinalizarAtendimentoServiceTest {
         verify(solicitacaoRepository).findByIdAndStatusSolicitacao(id, EM_ATENDIMENTO);
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
         verify(atendenteRepository).save(atendenteCaptor.capture());
+        verify(encaminharDaFilaParaAtendente).encaminharParaAtendente(equipe);
 
         Solicitacao solicitacaoResponse = solicitacaoCaptor.getValue();
 
@@ -86,5 +100,6 @@ class FinalizarAtendimentoServiceTest {
         verify(solicitacaoRepository, never()).findByIdAndStatusSolicitacao(any(Long.class), any(StatusSolicitacao.class));
         verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
         verify(atendenteRepository, never()).save(any(Atendente.class));
+        verify(encaminharDaFilaParaAtendente, never()).encaminharParaAtendente(any(Equipe.class));
     }
 }
