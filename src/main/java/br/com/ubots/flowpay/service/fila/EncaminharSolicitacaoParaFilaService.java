@@ -73,7 +73,12 @@ public class EncaminharSolicitacaoParaFilaService {
         solicitacao.setFila(fila);
         fila.getSolicitacoes().add(solicitacao);
 
-        if(fila.getSolicitacoes().size() == 3){
+        if(fila.getSolicitacoes()
+                .stream()
+                .filter(solicitacao1 -> solicitacao1.getStatusSolicitacao().equals(EM_FILA))
+                .toList()
+                .size() == 3){
+
             fila.setCheia(true);
         }
 

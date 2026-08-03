@@ -5,7 +5,6 @@ import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.fila.EncaminharSolicitacaoParaFilaService;
 import br.com.ubots.flowpay.service.validator.ValidaReferenciaConversaService;
-import br.com.ubots.flowpay.validator.ValidaAssuntoSolicitacaoValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,9 +31,6 @@ class CriarSolicitacaoServiceTest {
     private ValidaReferenciaConversaService validaReferenciaConversaService;
 
     @Mock
-    private ValidaAssuntoSolicitacaoValidator validaAssuntoSolicitacaoValidator;
-
-    @Mock
     private SolicitacaoRepository solicitacaoRepository;
 
     @Mock
@@ -52,7 +48,6 @@ class CriarSolicitacaoServiceTest {
         tested.criar(request);
 
         verify(validaReferenciaConversaService).jaExiste(request.getReferenciaConversa());
-        verify(validaAssuntoSolicitacaoValidator).assuntoValido(request.getAssunto());
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
 
         Solicitacao response = solicitacaoCaptor.getValue();
@@ -75,23 +70,6 @@ class CriarSolicitacaoServiceTest {
         assertThrows(ResponseStatusException.class, () -> tested.criar(request));
 
         verify(validaReferenciaConversaService).jaExiste(request.getReferenciaConversa());
-        verify(validaAssuntoSolicitacaoValidator, never()).assuntoValido(any(String.class));
-        verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
-        verify(encaminharSolicitacaoParaFilaService, never()).encaminharParaFila(any(Solicitacao.class));
-    }
-
-    @Test
-    @DisplayName("Não deve cadastrar se assunto invalido")
-    void naoDeveCadastrarSeAssuntoInvalido(){
-
-        CriarSolicitacaoRequest request = criarSolicitacaoRequest();
-
-        doThrow(ResponseStatusException.class).when(validaAssuntoSolicitacaoValidator).assuntoValido(request.getAssunto());
-
-        assertThrows(ResponseStatusException.class, () -> tested.criar(request));
-
-        verify(validaReferenciaConversaService).jaExiste(request.getReferenciaConversa());
-        verify(validaAssuntoSolicitacaoValidator).assuntoValido(request.getAssunto());
         verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
         verify(encaminharSolicitacaoParaFilaService, never()).encaminharParaFila(any(Solicitacao.class));
     }

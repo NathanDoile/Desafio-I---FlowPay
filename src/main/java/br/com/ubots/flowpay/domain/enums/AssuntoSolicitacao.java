@@ -23,11 +23,8 @@ public enum AssuntoSolicitacao {
         else if(texto.equalsIgnoreCase("contratacao de emprestimo")){
             return EMPRESTIMO;
         }
-        else if(texto.equalsIgnoreCase("outros assuntos")){
-            return OUTROS_ASSUNTOS;
-        }
         else{
-            return null;
+            return OUTROS_ASSUNTOS;
         }
 
     }
