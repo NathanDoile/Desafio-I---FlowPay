@@ -40,7 +40,6 @@ public class FinalizarAtendimentoService {
         Atendente atendente = solicitacao.getAtendente();
 
         solicitacao.setStatusSolicitacao(FINALIZADO);
-        solicitacao.setAtendente(null);
 
         atendente.setCheio(false);
 

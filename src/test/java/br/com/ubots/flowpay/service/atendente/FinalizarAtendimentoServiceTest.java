@@ -82,7 +82,6 @@ class FinalizarAtendimentoServiceTest {
         Atendente atendenteResponse = atendenteCaptor.getValue();
 
         assertEquals(FINALIZADO, solicitacaoResponse.getStatusSolicitacao());
-        assertNull(solicitacaoResponse.getAtendente());
         assertFalse(atendenteResponse.isCheio());
     }
 

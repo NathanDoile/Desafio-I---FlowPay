@@ -108,8 +108,8 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         Equipe equipe = EquipeFactory.equipe(time);
 
         Fila fila = FilaFactory.fila();
-        fila.getSolicitacoes().add(Solicitacao.builder().build());
-        fila.getSolicitacoes().add(Solicitacao.builder().build());
+        fila.getSolicitacoes().add(Solicitacao.builder().statusSolicitacao(EM_FILA).build());
+        fila.getSolicitacoes().add(Solicitacao.builder().statusSolicitacao(EM_FILA).build());
 
         equipe.setFila(fila);
 

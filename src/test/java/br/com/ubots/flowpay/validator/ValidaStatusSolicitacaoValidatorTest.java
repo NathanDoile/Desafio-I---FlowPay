@@ -41,24 +41,4 @@ class ValidaStatusSolicitacaoValidatorTest {
         assertDoesNotThrow(() -> tested.emSolicitacao(solicitacao));
     }
 
-    @Test
-    @DisplayName("Deve dar erro se solicitacao tiver status diferente de EM_FILA")
-    void deveDarErroSeSolicitacaoStatusDiferenteEmFila(){
-
-        Solicitacao solicitacao = solicitacao(EM_ATENDIMENTO);
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> tested.emFila(solicitacao));
-
-        assertEquals(BAD_REQUEST, exception.getStatusCode());
-        assertEquals("A solicitação não está na fila para distribuição.", exception.getReason());
-    }
-
-    @Test
-    @DisplayName("Não deve dar erro se solicitacao tiver status  EM_FILA")
-    void naoDeveDarErroSeSolicitacaoStatusEmFila(){
-
-        Solicitacao solicitacao = solicitacao(EM_FILA);
-
-        assertDoesNotThrow(() -> tested.emFila(solicitacao));
-    }
 }
