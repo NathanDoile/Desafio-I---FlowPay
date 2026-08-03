@@ -6,7 +6,6 @@ import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.repository.AtendenteRepository;
 import br.com.ubots.flowpay.repository.EquipeRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
-import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;

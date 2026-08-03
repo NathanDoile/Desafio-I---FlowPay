@@ -4,7 +4,6 @@ import br.com.ubots.flowpay.domain.Solicitacao;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_FILA;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.SOLICITADO;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
