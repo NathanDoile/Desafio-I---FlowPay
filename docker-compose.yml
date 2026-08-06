@@ -6,10 +6,10 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_DATABASE: flowpay_db
-      MYSQL_ROOT_PASSWORD: senha_root_super_secreta
-      MYSQL_USER: flowpay_user
-      MYSQL_PASSWORD: flowpay_senha
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - flowpay_mysql_data:/var/lib/mysql
       - ./data/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
@@ -23,11 +23,10 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/flowpay_db?useTimezone=true&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=flowpay_user
-      - SPRING_DATASOURCE_PASSWORD=flowpay_senha
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # Mantendo a sua regra de ouro!
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${DB_NAME}?useTimezone=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
 
-# Declaração do volume onde os dados do MySQL ficarão salvos
 volumes:
   flowpay_mysql_data:
