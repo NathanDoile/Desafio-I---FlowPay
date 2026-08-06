@@ -1,6 +1,4 @@
-USE bd_desafio_flowpay;
-
-INSERT INTO equipe(categoria) 
+INSERT INTO equipe(categoria)
 VALUES ('CARTAO'), ('EMPRESTIMOS'), ('OUTROS ASSUNTOS');
 
 INSERT INTO fila(id_equipe, is_cheia, versao)

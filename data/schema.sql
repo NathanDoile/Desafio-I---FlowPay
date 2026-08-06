@@ -1,9 +1,3 @@
-DROP DATABASE IF EXISTS bd_desafio_flowpay;
-
-CREATE DATABASE IF NOT EXISTS bd_desafio_flowpay;
-
-USE bd_desafio_flowpay;
-
 CREATE TABLE equipe(
 	id BIGINT UNSIGNED AUTO_INCREMENT UNIQUE NOT NULL,
     categoria VARCHAR(15) NOT NULL,
