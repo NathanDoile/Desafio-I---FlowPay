@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CriarSolicitacaoRequest {
 
-    @NotNull
-    @Positive
+    @NotNull(message = "não deve ser nulo")
+    @Positive(message = "deve ser maior que 0")
     private Long referenciaConversa;
 
-    @NotBlank
+    @NotBlank(message = "não deve estar em branco")
     private String assunto;
 }
