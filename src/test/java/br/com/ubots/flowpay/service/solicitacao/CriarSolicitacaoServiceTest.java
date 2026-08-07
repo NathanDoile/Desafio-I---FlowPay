@@ -2,6 +2,7 @@ package br.com.ubots.flowpay.service.solicitacao;
 
 import br.com.ubots.flowpay.controller.request.CriarSolicitacaoRequest;
 import br.com.ubots.flowpay.domain.Solicitacao;
+import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.fila.EncaminharSolicitacaoParaFilaService;
 import br.com.ubots.flowpay.service.validator.ValidaReferenciaConversaService;
@@ -15,8 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.SOLICITADO;
 import static br.com.ubots.flowpay.factory.SolicitacaoFactory.criarSolicitacaoRequest;
+import static br.com.ubots.flowpay.factory.SolicitacaoFactory.solicitacao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -44,6 +48,8 @@ class CriarSolicitacaoServiceTest {
     void deveCadastrarSolicitacaoComDadosCorretos(){
 
         CriarSolicitacaoRequest request = criarSolicitacaoRequest();
+
+        when(solicitacaoRepository.findById(null)).thenReturn(Optional.of(solicitacao(SOLICITADO)));
 
         tested.criar(request);
 

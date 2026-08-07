@@ -1,7 +1,9 @@
 package br.com.ubots.flowpay.service.solicitacao;
 
 import br.com.ubots.flowpay.controller.request.CriarSolicitacaoRequest;
+import br.com.ubots.flowpay.controller.response.CriarSolicitacaoResponse;
 import br.com.ubots.flowpay.domain.Solicitacao;
+import br.com.ubots.flowpay.mapper.SolicitacaoMapper;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.fila.EncaminharSolicitacaoParaFilaService;
 import br.com.ubots.flowpay.service.validator.ValidaReferenciaConversaService;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.SOLICITADO;
 import static br.com.ubots.flowpay.mapper.SolicitacaoMapper.toEntity;
+import static br.com.ubots.flowpay.mapper.SolicitacaoMapper.toResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class CriarSolicitacaoService {
             delay = 200,
             multiplier = 2.0
     )
-    public void criar(CriarSolicitacaoRequest request) {
+    public CriarSolicitacaoResponse criar(CriarSolicitacaoRequest request) {
 
         validaReferenciaConversaService.jaExiste(request.getReferenciaConversa());
 
@@ -39,5 +42,9 @@ public class CriarSolicitacaoService {
         solicitacaoRepository.save(solicitacao);
 
         encaminharSolicitacaoParaFilaService.encaminharParaFila(solicitacao);
+
+        Solicitacao solicitacaoRetorno = solicitacaoRepository.findById(solicitacao.getId()).get();
+
+        return toResponse(solicitacaoRetorno);
     }
 }
