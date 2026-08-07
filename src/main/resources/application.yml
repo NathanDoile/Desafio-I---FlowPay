@@ -3,6 +3,12 @@ spring:
     url: jdbc:mysql://localhost:3306/bd_desafio_flowpay
     username: root
     password: root
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+      idle-timeout: 10000
+      max-lifetime: 1800000
+      connection-timeout: 20000
   jpa:
     hibernate:
       ddl-auto: validate
