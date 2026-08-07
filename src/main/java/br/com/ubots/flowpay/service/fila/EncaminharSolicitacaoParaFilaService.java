@@ -50,7 +50,7 @@ public class EncaminharSolicitacaoParaFilaService {
 
         AssuntoSolicitacao assuntoSolicitacao = deTexto(solicitacao.getAssunto());
 
-        Categoria time = assuntoSolicitacao != null ? Categoria.valueOf(assuntoSolicitacao.toString()) : OUTROS_ASSUNTOS;
+        Categoria time = Categoria.valueOf(assuntoSolicitacao.toString());
 
         Equipe equipe = equipeRepository.findByCategoria(time.getDescricao());
 
