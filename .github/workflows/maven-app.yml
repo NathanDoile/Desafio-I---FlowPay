@@ -4,11 +4,11 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'frontend/**'
+      - 'app/**'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'frontend/**'
+      - 'app/**'
 
 permissions:
   contents: read
@@ -29,7 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
         with:
-          projectBaseDir: frontend
+          projectBaseDir: app
           args: >
             -Dsonar.projectKey=NathanDoile_Desafio-I---FlowPay
             -Dsonar.organization=nathandoile
