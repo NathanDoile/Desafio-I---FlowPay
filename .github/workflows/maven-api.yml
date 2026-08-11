@@ -1,10 +1,15 @@
-name: Pipeline
+name: Pipeline API
 
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'api/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'api/**'
+
 
 permissions:
   contents: read
@@ -13,6 +18,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./api
 
     steps:
       - name: Baixar o código do repositório
@@ -47,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pacote-da-aplicacao
-          path: target/*.jar
+          path: api/target/*.jar
 
       # --- ETAPAS DE DEPLOY AUTOMÁTICO NO GCP ---
 
