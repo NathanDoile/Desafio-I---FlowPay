@@ -1,7 +1,7 @@
 import { ArrowUpRight, Clock, Users } from "lucide-react"
-import {BG_AZUL, BG_LARANJA, TEXTO_AZUL_BG_BRANCO, TEXTO_CINZA_BG_AZUL, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO, TEXTO_PRETO_BG_LARANJA} from '../../../constants/cores.constant.jsx';
+import {BG_AZUL_ESCURO, BG_LARANJA, TEXTO_AZUL_BG_BRANCO, TEXTO_CINZA_BG_AZUL, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO, TEXTO_PRETO_BG_LARANJA} from '../../../constants/cores.constant.jsx';
 
-export function FilaTimeCard({ equipe }){
+export function FilaTimeCard({ equipe, onClick }){
 
     const Icon = equipe.icone;
 
@@ -11,7 +11,7 @@ export function FilaTimeCard({ equipe }){
             <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                 
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_AZUL} text-white`}>
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_AZUL_ESCURO} text-white`}>
                         <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <div>
@@ -19,7 +19,7 @@ export function FilaTimeCard({ equipe }){
                     </div>
                 </div>
                 
-                <ArrowUpRight
+                <ArrowUpRight onClick={() => onClick(equipe.id)}
                     className={`h-5 w-5 ${TEXTO_CINZA_BG_BRANCO} transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5`}
                     aria-hidden="true"
                 />
@@ -33,7 +33,7 @@ export function FilaTimeCard({ equipe }){
                 
                 <span
                     className={`mb-2 inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${
-                        equipe.quantidadeEmFila === 0 ? `${BG_AZUL} ${TEXTO_CINZA_BG_AZUL}` : `${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`
+                        equipe.quantidadeEmFila === 0 ? `${BG_AZUL_ESCURO} ${TEXTO_CINZA_BG_AZUL}` : `${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`
                     }`}
                     aria-hidden={equipe.quantidadeEmFila === 0}
                     >
