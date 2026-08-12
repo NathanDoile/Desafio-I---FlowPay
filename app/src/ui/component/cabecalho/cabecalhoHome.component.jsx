@@ -1,11 +1,11 @@
 import { LayoutGrid } from "lucide-react";
-import {BG_LARANJA, BG_AZUL, TEXTO_PRETO_BG_LARANJA, TEXTO_CINZA_BG_AZUL} from '../../../constants/cores.constant.jsx';
+import {BG_LARANJA, TEXTO_PRETO_BG_LARANJA, TEXTO_CINZA_BG_AZUL, BG_AZUL_ESCURO} from '../../../constants/cores.constant.jsx';
 
 export function CabecalhoHome({nomeGerente, data}){
     return (
-        <header className={`${BG_AZUL} text-white shadow-md`}>
+        <header className={`${BG_AZUL_ESCURO} text-white shadow-md`}>
             
-            <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
 
                 <div className="flex items-center gap-3">
 

@@ -1,11 +1,19 @@
 import { CreditCard, HandCoins, MessagesSquare } from "lucide-react";
 import {CabecalhoHome, FilaTimeCard} from '../../component/index.js';
-import { BG_AZUL, TEXTO_CINZA_BG_AZUL, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from '../../../constants/cores.constant.jsx';
+import { BG_AZUL_ESCURO, TEXTO_CINZA_BG_AZUL, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from '../../../constants/cores.constant.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export function Home(){
 
+  const navigate = useNavigate();
+
+  function abrirDetalhes(idDaEquipe) {
+        navigate('/detalhes-fila', { state: { equipeDesejada: idDaEquipe } });
+    }
+
     const equipes = [
     {
+      id: "CARTOES",
       categoria: "CARTÕES",
       quantidadeEmFila: 34,
       quantidadeAtendentes: 8,
@@ -13,6 +21,7 @@ export function Home(){
       icone: CreditCard
     },
     {
+      id: "EMPRESTIMOS",
       categoria: "EMPRÉSTIMOS",
       quantidadeEmFila: 18,
       quantidadeAtendentes: 6,
@@ -20,6 +29,7 @@ export function Home(){
       icone: HandCoins
     },
     {
+      id: "OUTROS_ASSUNTOS",
       categoria: "OUTROS ASSUNTOS",
       quantidadeEmFila: 9,
       quantidadeAtendentes: 4,
@@ -42,7 +52,7 @@ export function Home(){
 
       <CabecalhoHome nomeGerente="Ana Ribeiro" data={dataAtual} />
 
-      <main className="mx-auto max-w-6xl px-6 py-8">
+      <main className="mx-auto max-w-[1400px] px-6 py-8">
         
         <section className="mb-8" aria-label="Resumo geral">
           <div className="flex flex-col gap-1">
@@ -54,7 +64,7 @@ export function Home(){
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-            <div className={`rounded-xl ${BG_AZUL} p-5 text-white shadow-sm`}>
+            <div className={`rounded-xl ${BG_AZUL_ESCURO} p-5 text-white shadow-sm`}>
               <p className={`text-xs font-medium uppercase tracking-wide ${TEXTO_CINZA_BG_AZUL}`}>
                 Total de tickets
               </p>
@@ -80,7 +90,7 @@ export function Home(){
           
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {equipes.map((equipe) => (
-              <FilaTimeCard key={equipe.id} equipe={equipe} />
+              <FilaTimeCard key={equipe.id} equipe={equipe} onClick={abrirDetalhes} />
             ))}
           </div>
         </section>
