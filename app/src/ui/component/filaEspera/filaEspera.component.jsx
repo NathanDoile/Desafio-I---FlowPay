@@ -1,6 +1,6 @@
 import { Inbox, Timer } from "lucide-react";
 import { elapsedFromMinsAgo, formatClockMs, formatDuration } from "../../../utils/time.js";
-import { BG_AZUL_ESCURO, TEXTO_AZUL_BG_BRANCO, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO, TEXTO_PRETO_BG_LARANJA } from "../../../constants/cores.constant.jsx";
+import { BG_AZUL_ESCURO, TEXTO_AZUL_BG_BRANCO, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from "../../../constants/cores.constant.jsx";
 
 export function FilaEspera({ equipe, anchor, now }){
 
