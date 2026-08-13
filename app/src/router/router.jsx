@@ -1,4 +1,4 @@
-import { Home, DetalheFila } from "../ui/screen/index";
+import { Home, DetalheFila, MetricasFilas } from "../ui/screen/index";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -9,5 +9,9 @@ export const router = createBrowserRouter([
   {
     path: "/detalhes-fila",
     element: <DetalheFila />
+  },
+  {
+    path: "/metricas",
+    element: <MetricasFilas />
   }
 ]);

@@ -2,8 +2,11 @@ import { Headset } from "lucide-react"
 import {equipesMock, listaEquipesMock} from '../../../mocks/equipes.mock.js';
 import {formatClock} from '../../../utils/time.js';
 import { BG_AZUL_ESCURO, BG_LARANJA, TEXTO_CINZA_BG_AZUL, TEXTO_PRETO_BG_LARANJA } from '../../../constants/cores.constant.jsx';
+import { useNavigate } from "react-router-dom";
 
 export function CabecalhoDetalheFila({equipeSelecionada, horarioAtual, onSelecionarEquipe}){
+
+    const navigate = useNavigate();
 
     const equipe = equipesMock[equipeSelecionada];
 
@@ -19,8 +22,8 @@ export function CabecalhoDetalheFila({equipeSelecionada, horarioAtual, onSelecio
           
             <div className="flex items-center gap-3">
 
-                <span className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`}>
-                    <Headset className="h-6 w-6" aria-hidden="true" />
+                <span className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer`}>
+                    <Headset onClick={() => navigate('/')} className="h-6 w-6" aria-hidden="true" />
                 </span>
 
                 <div>
