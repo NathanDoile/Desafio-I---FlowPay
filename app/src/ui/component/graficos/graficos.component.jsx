@@ -10,11 +10,11 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-import { BG_LARANJA, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from "../../../constants/cores.constant";
+import { TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from "../../../constants/cores.constant";
 
 // Função que desenha o Tooltip customizado
 const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-md outline-none">
         {/* Título (ex: Empréstimos) */}

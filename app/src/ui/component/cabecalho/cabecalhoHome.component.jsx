@@ -13,9 +13,9 @@ export function CabecalhoHome({nomeGerente, data}){
 
                 <div className="flex items-center gap-3">
 
-                    <div onClick={() => navigate('/metricas')} className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer`}>
+                    <button type="button" onClick={() => navigate('/metricas')} className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer`}>
                         <LayoutGrid className="h-6 w-6" aria-hidden="true" />
-                    </div>
+                    </button>
 
                     <div>
                         <h1 className="text-lg font-semibold leading-tight text-balance">Painel de Filas</h1>
