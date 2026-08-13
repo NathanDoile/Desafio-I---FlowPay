@@ -5,7 +5,6 @@ import {
   XAxis, 
   YAxis, 
   LabelList, 
-  Cell,
   Tooltip,
   Legend,
   ResponsiveContainer
@@ -23,7 +22,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         {/* Lista de itens (Tempo de atendimento, etc) */}
         <div className="flex flex-col gap-1.5">
           {payload.map((entry, index) => (
-            <div key={index} className="flex items-center justify-between gap-4 text-sm">
+            <div key={entry.name} className="flex items-center justify-between gap-4 text-sm">
               <div className="flex items-center gap-2">
                 {/* O quadradinho colorido */}
                 <span
@@ -55,8 +54,8 @@ export function Graficos({ equipes, empresa }){
   }));
 
   const atendimentosData = [
-    ...equipes.map((t) => ({ equipe: t.nome, total: t.totalAtendimentos, geral: false })),
-    { equipe: "Empresa", total: empresa.totalAtendimentos, geral: true },
+    ...equipes.map((t) => ({ equipe: t.nome, total: t.totalAtendimentos, geral: false, fill:"lab(20.6116 -0.0234246 -27.6176)" })),
+    { equipe: "Empresa", total: empresa.totalAtendimentos, geral: true, fill:"lab(78.8702 18.9326 41.9203)" },
   ];
 
   const recusaData = equipes.map((t) => ({
@@ -117,14 +116,6 @@ export function Graficos({ equipes, empresa }){
                         
                         <Bar dataKey="total" name="Atendimentos" radius={[4, 4, 0, 0]}>
                             <LabelList dataKey="total" position="top" className="fill-gray-600 text-xs font-semibold" />
-                            
-                            {/* Muda a cor dinamicamente se for a coluna "Geral/Empresa" */}
-                            {atendimentosData.map((entry) => (
-                            <Cell
-                                key={entry.equipe}
-                                fill={entry.geral ? "lab(78.8702 18.9326 41.9203)" : "lab(20.6116 -0.0234246 -27.6176)"}
-                            />
-                            ))}
                         </Bar>
                     </BarChart>
                 </ResponsiveContainer>
