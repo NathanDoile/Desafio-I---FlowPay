@@ -6,6 +6,7 @@ export {ResumoMetricaCard} from './resumoMetricaEquipe/resumoMetricaCard.compone
 export {TicketsRecusadosCard} from './ticketsRecusadosCard/ticketsRecusadosCard.component.jsx';
 export {FilaEspera} from './filaEspera/filaEspera.component.jsx';
 export {AtendentesEquipe} from './atendentesEquipe/atendentesEquipe.component.jsx';
+export {CabecalhoTelaIndisponivel} from './cabecalho/cabecalhoTelaIndisponivel.component.jsx';
 export {SeletorPeriodo} from './seletorPeriodo/seletorPeriodo.component.jsx';
 export {CabecalhoMetricas} from './cabecalho/cabecalhoMetricas.component.jsx';
 export {MetricasGeraisCard} from './metricasGeraisCard/metricasGeraisCards.component.jsx';
