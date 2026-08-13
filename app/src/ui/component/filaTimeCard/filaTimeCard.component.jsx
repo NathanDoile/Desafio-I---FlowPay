@@ -20,7 +20,7 @@ export function FilaTimeCard({ equipe, onClick }){
                 </div>
                 
                 <ArrowUpRight onClick={() => onClick(equipe.id)}
-                    className={`h-5 w-5 ${TEXTO_CINZA_BG_BRANCO} transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5`}
+                    className={`h-5 w-5 ${TEXTO_CINZA_BG_BRANCO} transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 cursor-pointer`}
                     aria-hidden="true"
                 />
             </div>

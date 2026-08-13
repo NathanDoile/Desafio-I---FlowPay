@@ -7,3 +7,8 @@ export {TicketsRecusadosCard} from './ticketsRecusadosCard/ticketsRecusadosCard.
 export {FilaEspera} from './filaEspera/filaEspera.component.jsx';
 export {AtendentesEquipe} from './atendentesEquipe/atendentesEquipe.component.jsx';
 export {CabecalhoTelaIndisponivel} from './cabecalho/cabecalhoTelaIndisponivel.component.jsx';
+export {SeletorPeriodo} from './seletorPeriodo/seletorPeriodo.component.jsx';
+export {CabecalhoMetricas} from './cabecalho/cabecalhoMetricas.component.jsx';
+export {MetricasGeraisCard} from './metricasGeraisCard/metricasGeraisCards.component.jsx';
+export {Graficos} from './graficos/graficos.component.jsx';
+export {TabelaMetricas} from './tabelaMetricas/tabelaMetricas.component.jsx';

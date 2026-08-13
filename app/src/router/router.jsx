@@ -1,4 +1,4 @@
-import { Home, DetalheFila, TelaIndisponivel } from "../ui/screen/index";
+import { Home, DetalheFila, MetricasFilas, TelaIndisponivel } from "../ui/screen/index";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -10,12 +10,12 @@ export const router = createBrowserRouter([
     path: "/detalhes-fila",
     element: <DetalheFila />
   },
-  
-
-
-  
   {
     path: "/indisponivel",
     element: <TelaIndisponivel />
+  },
+  {
+    path: "/metricas",
+    element: <MetricasFilas />
   }
 ]);
