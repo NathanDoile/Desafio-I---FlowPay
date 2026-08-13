@@ -1,7 +1,11 @@
 import { LayoutGrid } from "lucide-react";
 import {BG_LARANJA, TEXTO_PRETO_BG_LARANJA, TEXTO_CINZA_BG_AZUL, BG_AZUL_ESCURO} from '../../../constants/cores.constant.jsx';
+import { useNavigate } from "react-router-dom";
 
 export function CabecalhoHome({nomeGerente, data}){
+
+    const navigate = useNavigate();
+
     return (
         <header className={`${BG_AZUL_ESCURO} text-white shadow-md`}>
             
@@ -9,7 +13,7 @@ export function CabecalhoHome({nomeGerente, data}){
 
                 <div className="flex items-center gap-3">
 
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`}>
+                    <div onClick={() => navigate('/metricas')} className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer`}>
                         <LayoutGrid className="h-6 w-6" aria-hidden="true" />
                     </div>
 
