@@ -1,0 +1,80 @@
+package br.com.ubots.flowpay.service.relatorios;
+
+import br.com.ubots.flowpay.controller.response.TelaHomeResponse;
+import br.com.ubots.flowpay.domain.Equipe;
+import br.com.ubots.flowpay.domain.enums.Categoria;
+import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
+import br.com.ubots.flowpay.repository.EquipeRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static br.com.ubots.flowpay.domain.enums.Categoria.*;
+import static br.com.ubots.flowpay.factory.EquipeFactory.equipe;
+import static br.com.ubots.flowpay.factory.SolicitacaoFactory.solicitacao;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class TelaHomeServiceTest {
+
+    @InjectMocks
+    private TelaHomeService tested;
+
+    @Mock
+    private EquipeRepository equipeRepository;
+
+    @Test
+    @DisplayName("Deve retornar os dados da tela home")
+    void deveRetornarDadosDaTelaHome() {
+
+        List<Equipe> equipes = new ArrayList<>();
+
+        Equipe equipeI = equipe(CARTAO);
+        equipeI.getFila().getSolicitacoes().add(solicitacao(StatusSolicitacao.EM_FILA));
+        Equipe equipeII = equipe(EMPRESTIMO);
+        Equipe equipeIII = equipe(OUTROS_ASSUNTOS);
+
+        equipes.add(equipeI);
+        equipes.add(equipeII);
+        equipes.add(equipeIII);
+
+        when(equipeRepository.findAll()).thenReturn(equipes);
+
+        TelaHomeResponse response = tested.gerarHome();
+
+        verify(equipeRepository).findAll();
+
+        assertEquals(1L, response.getTotalTickets());
+        assertEquals(0L, response.getQuantidadeAtendentes());
+        assertEquals(3L, response.getQuantidadeEquipes());
+
+        response.getEquipes().forEach(homeEquipeResponse -> {
+            assertNotNull(homeEquipeResponse.getId());
+            assertNotNull(homeEquipeResponse.getNome());
+
+            if(homeEquipeResponse.getNome().equals(Categoria.CARTAO.getDescricao())){
+                assertEquals(1L, homeEquipeResponse.getQuantidadeTicketsEmFila());
+            }
+            else{
+                assertEquals(0L, homeEquipeResponse.getQuantidadeTicketsEmFila());
+            }
+
+            assertEquals(0L, homeEquipeResponse.getQuantidadeAtendentes());
+
+            if(homeEquipeResponse.getNome().equals(Categoria.CARTAO.getDescricao())){
+                assertTrue(homeEquipeResponse.getMediaTempoEsperaEmSegundos() >= 30);
+            }
+            else{
+                assertEquals(0, homeEquipeResponse.getMediaTempoEsperaEmSegundos());
+            }
+        });
+    }
+}

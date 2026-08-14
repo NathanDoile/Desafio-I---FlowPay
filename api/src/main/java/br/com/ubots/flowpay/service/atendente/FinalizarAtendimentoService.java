@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_ATENDIMENTO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.FINALIZADO;
+import static br.com.ubots.flowpay.helper.DateTimeNow.now;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,7 @@ public class FinalizarAtendimentoService {
         Atendente atendente = solicitacao.getAtendente();
 
         solicitacao.setStatusSolicitacao(FINALIZADO);
+        solicitacao.setDataHoraFinalAtendimento(now());
 
         atendente.setCheio(false);
 
