@@ -12,6 +12,7 @@ import br.com.ubots.flowpay.repository.EquipeRepository;
 import br.com.ubots.flowpay.repository.FilaRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.atendente.EncaminharDaFilaParaAtendente;
+import br.com.ubots.flowpay.service.solicitacao.SalvarSolicitacaoRecusadaService;
 import br.com.ubots.flowpay.validator.ValidaOcupacaoFilaValidator;
 import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +58,9 @@ class EncaminharSolicitacaoParaFilaServiceTest {
 
     @Mock
     private EncaminharDaFilaParaAtendente encaminharDaFilaParaAtendente;
+
+    @Mock
+    private SalvarSolicitacaoRecusadaService salvarSolicitacaoRecusadaService;
 
     @Captor
     private ArgumentCaptor<Solicitacao> solicitacaoCaptor;
@@ -175,13 +179,12 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         verify(validaStatusSolicitacaoValidator).emSolicitacao(solicitacao);
         verify(equipeRepository).findByCategoria(time.getDescricao());
         verify(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
-        verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
+        verify(salvarSolicitacaoRecusadaService).salvar(solicitacaoCaptor.capture());
         verify(filaRepository, never()).save(any(Fila.class));
         verify(encaminharDaFilaParaAtendente, never()).encaminharParaAtendente(any(Equipe.class));
 
         Solicitacao response = solicitacaoCaptor.getValue();
 
-        assertEquals(RECUSADO_POR_FILA_ESPERA_CHEIA, response.getStatusSolicitacao());
-        assertNull(response.getFila());
+        assertEquals(equipe.getFila().getId(), response.getFila().getId());
     }
 }
