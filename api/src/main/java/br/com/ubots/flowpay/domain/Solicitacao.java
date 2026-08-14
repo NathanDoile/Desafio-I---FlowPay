@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
+import java.time.ZonedDateTime;
+
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -29,6 +31,14 @@ public class Solicitacao {
 
     @Version
     private Long versao;
+
+    private ZonedDateTime dataHoraInicialSolicitacao;
+
+    private ZonedDateTime dataHoraInicialFila;
+
+    private ZonedDateTime dataHoraInicialAtendimento;
+
+    private ZonedDateTime dataHoraFinalAtendimento;
 
     @ManyToOne
     @JoinColumn(name = "id_fila")

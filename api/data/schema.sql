@@ -31,6 +31,10 @@ CREATE TABLE solicitacao(
     id_fila BIGINT UNSIGNED,
     id_atendente BIGINT UNSIGNED,
     versao BIGINT UNSIGNED NOT NULL,
+    data_hora_inicial_solicitacao TIMESTAMP,
+    data_hora_inicial_fila TIMESTAMP,
+    data_hora_inicial_atendimento TIMESTAMP,
+    data_hora_final_atendimento TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY(id_fila) REFERENCES fila(id),
     FOREIGN KEY(id_atendente) REFERENCES atendente(id)

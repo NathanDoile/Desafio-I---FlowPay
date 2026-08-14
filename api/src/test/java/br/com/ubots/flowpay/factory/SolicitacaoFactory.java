@@ -3,6 +3,7 @@ package br.com.ubots.flowpay.factory;
 import br.com.ubots.flowpay.controller.request.CriarSolicitacaoRequest;
 import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
+import br.com.ubots.flowpay.helper.DateTimeNow;
 
 import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.EMPRESTIMO;
 
@@ -25,6 +26,7 @@ public class SolicitacaoFactory {
                 .referenciaConversa(20260731000001L)
                 .statusSolicitacao(statusSolicitacao)
                 .assunto(EMPRESTIMO.getDescricao())
+                .dataHoraInicialFila(DateTimeNow.now().minusSeconds(30))
                 .versao(0L)
                 .build();
     }

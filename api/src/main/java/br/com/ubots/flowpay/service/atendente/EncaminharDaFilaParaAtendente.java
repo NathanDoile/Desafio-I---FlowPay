@@ -16,6 +16,7 @@ import java.util.List;
 
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_ATENDIMENTO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_FILA;
+import static br.com.ubots.flowpay.helper.DateTimeNow.now;
 import static java.util.Objects.isNull;
 
 @Service
@@ -59,6 +60,7 @@ public class EncaminharDaFilaParaAtendente {
                 equipe.getFila().setCheia(false);
 
                 solicitacao.setStatusSolicitacao(EM_ATENDIMENTO);
+                solicitacao.setDataHoraInicialAtendimento(now());
                 solicitacao.setAtendente(atendenteLivre);
 
                 atendenteLivre.getSolicitacoes().add(solicitacao);

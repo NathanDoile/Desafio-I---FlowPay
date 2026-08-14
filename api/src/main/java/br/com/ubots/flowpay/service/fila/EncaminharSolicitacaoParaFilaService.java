@@ -9,6 +9,7 @@ import br.com.ubots.flowpay.repository.EquipeRepository;
 import br.com.ubots.flowpay.repository.FilaRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.atendente.EncaminharDaFilaParaAtendente;
+import br.com.ubots.flowpay.service.solicitacao.SalvarSolicitacaoRecusadaService;
 import br.com.ubots.flowpay.validator.ValidaOcupacaoFilaValidator;
 import br.com.ubots.flowpay.validator.ValidaStatusSolicitacaoValidator;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.deTexto;
-import static br.com.ubots.flowpay.domain.enums.Categoria.OUTROS_ASSUNTOS;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_FILA;
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.RECUSADO_POR_FILA_ESPERA_CHEIA;
+import static br.com.ubots.flowpay.helper.DateTimeNow.now;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +37,8 @@ public class EncaminharSolicitacaoParaFilaService {
     private final SolicitacaoRepository solicitacaoRepository;
 
     private final EncaminharDaFilaParaAtendente encaminharDaFilaParaAtendente;
+
+    private final SalvarSolicitacaoRecusadaService salvarSolicitacaoRecusadaService;
 
     @Retryable(
             includes = ObjectOptimisticLockingFailureException.class,
@@ -61,15 +63,14 @@ public class EncaminharSolicitacaoParaFilaService {
             validaOcupacaoFilaValidator.filaCheia(fila);
 
         }catch (ResponseStatusException exception){
-
-            solicitacao.setStatusSolicitacao(RECUSADO_POR_FILA_ESPERA_CHEIA);
-
-            solicitacaoRepository.save(solicitacao);
+            solicitacao.setFila(fila);
+            salvarSolicitacaoRecusadaService.salvar(solicitacao);
 
             throw exception;
         }
 
         solicitacao.setStatusSolicitacao(EM_FILA);
+        solicitacao.setDataHoraInicialFila(now());
         solicitacao.setFila(fila);
         fila.getSolicitacoes().add(solicitacao);
 
