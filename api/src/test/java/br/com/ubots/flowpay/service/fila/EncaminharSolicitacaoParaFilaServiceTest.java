@@ -168,7 +168,7 @@ class EncaminharSolicitacaoParaFilaServiceTest {
         equipe.setFila(fila);
 
         when(equipeRepository.findByCategoria(time.getDescricao())).thenReturn(equipe);
-        doThrow(ResponseStatusException.class).when(validaOcupacaoFilaValidator).filaCheia(equipe.getFila());
+        doThrow(ResponseStatusException.class).when(validaOcupacaoFilaValidator).filaCheia(any(Fila.class));
 
         assertThrows(ResponseStatusException.class, () -> tested.encaminharParaFila(solicitacao));
 
