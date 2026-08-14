@@ -57,11 +57,11 @@ public class TelaMetricasGeraisService {
         List<MetricasGeraisEquipeResponse> equipesResponse = gerarMetricasPorEquipe(solicitacoesDoMes, equipes, diasNoMes);
 
         return TelaMetricasGeraisResponse.builder()
-                .tempoMedioAtendimento(tempoMedioAtendimento != null ? tempoMedioAtendimento : 0L)
-                .tempoMedioEspera(tempoMedioEspera != null ? tempoMedioEspera : 0L)
+                .tempoMedioAtendimento(tempoMedioAtendimento)
+                .tempoMedioEspera(tempoMedioEspera)
                 .totalAtendimentos((long) finalizadas.size())
                 .totalTicketsRecusados((long) recusadas.size())
-                .mediaTicketsRecusadosPorDia(mediaTicketsRecusadosPorDia != null ? mediaTicketsRecusadosPorDia : 0L)
+                .mediaTicketsRecusadosPorDia(mediaTicketsRecusadosPorDia)
                 .equipe(equipesResponse)
                 .build();
     }
@@ -89,10 +89,6 @@ public class TelaMetricasGeraisService {
                 .filter(s -> dataInicio.apply(s) != null && dataFim.apply(s) != null)
                 .mapToLong(s -> diferencaEmSegundosEntre(dataInicio.apply(s), dataFim.apply(s)))
                 .sum() / solicitacoes.size();
-    }
-
-    private long calcularDiasNoMes(LocalDate primeiroDoMes, LocalDate ultimoDoMes) {
-        return java.time.temporal.ChronoUnit.DAYS.between(primeiroDoMes, ultimoDoMes) + 1;
     }
 
     private Long calcularMediaPorDia(long quantidade, long dias) {
