@@ -4,13 +4,17 @@ import br.com.ubots.flowpay.controller.response.HomeEquipeResponse;
 import br.com.ubots.flowpay.controller.response.TelaHomeResponse;
 import br.com.ubots.flowpay.domain.Equipe;
 import br.com.ubots.flowpay.domain.Solicitacao;
+import br.com.ubots.flowpay.helper.DateTimeNow;
 import br.com.ubots.flowpay.repository.EquipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_FILA;
+import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.*;
+import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosEntre;
 import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosParaAgora;
 
 @Service
@@ -18,6 +22,8 @@ import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosParaAgo
 public class TelaHomeService {
 
     private final EquipeRepository equipeRepository;
+
+    private final ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
     public TelaHomeResponse gerarHome() {
 
@@ -59,9 +65,15 @@ public class TelaHomeService {
 
     private Long mediaTempoEspera(Equipe equipe){
 
+        ZonedDateTime hoje = DateTimeNow.now();
+
         List<Solicitacao> solicitacoesEmFila = equipe.getFila().getSolicitacoes()
                 .stream()
-                .filter(solicitacao -> solicitacao.getStatusSolicitacao().equals(EM_FILA))
+                .filter(solicitacao -> solicitacao.getStatusSolicitacao().equals(FINALIZADO) || solicitacao.getStatusSolicitacao().equals(EM_ATENDIMENTO))
+                .filter(solicitacao -> solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId).getDayOfMonth() == hoje.getDayOfMonth()
+                    && solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId).getMonth().equals(hoje.getMonth())
+                    && solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId).getYear() == hoje.getYear()
+                )
                 .toList();
 
         if (solicitacoesEmFila.isEmpty()) {
@@ -70,7 +82,7 @@ public class TelaHomeService {
 
         Long somaTemposEmFila = solicitacoesEmFila
                 .stream()
-                .map(solicitacao -> diferencaEmSegundosParaAgora(solicitacao.getDataHoraInicialFila()))
+                .map(solicitacao -> diferencaEmSegundosEntre(solicitacao.getDataHoraInicialFila().withZoneSameInstant(zoneId), solicitacao.getDataHoraInicialAtendimento().withZoneSameInstant(zoneId)))
                 .reduce(0L, Long::sum);
 
         return somaTemposEmFila / solicitacoesEmFila.size();

@@ -9,6 +9,8 @@ import lombok.*;
 @Setter
 public class MetricasGeraisEquipeResponse {
 
+    private String nome;
+
     private Long tempoMedioAtendimento;
 
     private Long tempoMedioEspera;

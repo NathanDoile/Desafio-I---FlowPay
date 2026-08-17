@@ -1,14 +1,10 @@
 import { AlertTriangle } from "lucide-react";
-import { elapsedFromSecsAgo, formatHumanDuration } from "../../../utils/time.js";
+import { formatHumanDuration, elapsedSeconds } from "../../../utils/time.js";
 import { BG_VERMELHO_CLARO, TEXTO_CINZA_BG_VERMELHO_CLARO, TEXTO_PRETO_BG_VERMELHO_CLARO } from "../../../constants/cores.constant.jsx";
 
 export function TicketsRecusadosCard({equipe, anchor, now}){
 
-    const tempoDesdeUltimaRecusa = anchor === null || now === null 
-        ? null 
-        : elapsedFromSecsAgo(anchor, now, equipe.ultimoRecusadoSegundosAtras);
-
-    const isRecente = tempoDesdeUltimaRecusa !== null && tempoDesdeUltimaRecusa < 120;
+    const isRecente = equipe.dataHoraUltimoCancelamento !== null && equipe.dataHoraUltimoCancelamento < 120;
 
     return (
     <section
@@ -33,7 +29,7 @@ export function TicketsRecusadosCard({equipe, anchor, now}){
             <div>
               <p className={`text-xs font-medium ${TEXTO_CINZA_BG_VERMELHO_CLARO}`}>Recusados hoje</p>
               <p className="font-mono text-3xl font-semibold tabular-nums text-red-700">
-                {equipe.recusados}
+                {equipe.quantidadeAtendimentosCancelados}
               </p>
             </div>
             
@@ -46,7 +42,7 @@ export function TicketsRecusadosCard({equipe, anchor, now}){
                     : `font-mono text-3xl font-semibold tabular-nums ${TEXTO_PRETO_BG_VERMELHO_CLARO}`
                 }
               >
-                {tempoDesdeUltimaRecusa === null ? "--" : formatHumanDuration(tempoDesdeUltimaRecusa)}
+                {equipe.dataHoraUltimoCancelamento === null ? "--" : formatHumanDuration(elapsedSeconds(equipe.dataHoraUltimoCancelamento, now))}
               </p>
               <p className={`text-xs ${TEXTO_CINZA_BG_VERMELHO_CLARO}`}>atrás</p>
             </div>

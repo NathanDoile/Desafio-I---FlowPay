@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -25,6 +26,8 @@ import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosEntre;
 public class TelaDetalheService {
 
     private final EquipeRepository equipeRepository;
+
+    private final ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
     public TelaDetalheResponse gerarDetalhe(String categoriaEquipe) {
 
@@ -60,8 +63,8 @@ public class TelaDetalheService {
 
         ZonedDateTime dataHoraUltimoCancelamento = solicitacoesRecusadas
                 .stream()
-                .max(Comparator.comparing(Solicitacao::getDataHoraInicialSolicitacao))
-                .map(Solicitacao::getDataHoraInicialSolicitacao)
+                .max(Comparator.comparing(solicitacao -> solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId)))
+                .map(solicitacao -> solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId))
                 .orElse(null);
 
         List<DetalheFilaEsperaResponse> fila = solicitacoesEmFila
@@ -70,7 +73,7 @@ public class TelaDetalheService {
                         .builder()
                         .assunto(solicitacao.getAssunto())
                         .protocolo(solicitacao.getReferenciaConversa())
-                        .horaEntrouNaFila(solicitacao.getDataHoraInicialFila().toLocalTime())
+                        .dataHoraEntrouNaFila(solicitacao.getDataHoraInicialFila().withZoneSameInstant(zoneId))
                         .build())
                 .toList();
 
@@ -93,12 +96,12 @@ public class TelaDetalheService {
 
                     List<DetalheSolicitacaoAtendenteResponse> detalheSolicitacaoAtendenteResponseList = atendente.getSolicitacoes()
                             .stream()
-                            .filter(solicitacao -> solicitacao.getStatusSolicitacao().equals(EM_FILA))
+                            .filter(solicitacao -> solicitacao.getStatusSolicitacao().equals(EM_ATENDIMENTO))
                             .map(solicitacao -> DetalheSolicitacaoAtendenteResponse
                                     .builder()
                                     .assunto(solicitacao.getAssunto())
                                     .protocolo(solicitacao.getReferenciaConversa())
-                                    .horaEntrouEmAtendimento(solicitacao.getDataHoraInicialAtendimento().toLocalTime())
+                                    .dataHoraEntrouEmAtendimento(solicitacao.getDataHoraInicialAtendimento())
                                     .build())
                             .toList();
 
@@ -133,7 +136,7 @@ public class TelaDetalheService {
         return solicitacoes.stream()
                 .filter(solicitacao -> statusList.contains(solicitacao.getStatusSolicitacao()))
                 .filter(solicitacao -> {
-                    ZonedDateTime data = dataExtractor.apply(solicitacao);
+                    ZonedDateTime data = dataExtractor.apply(solicitacao).withZoneSameInstant(zoneId);
                     return data != null && data.toLocalDate().equals(hoje);
                 })
                 .toList();
@@ -146,7 +149,7 @@ public class TelaDetalheService {
             return 0L;
         }
         return solicitacoes.stream()
-                .mapToLong(solicitacao -> diferencaEmSegundosEntre(dataInicio.apply(solicitacao), dataFim.apply(solicitacao)))
+                .mapToLong(solicitacao -> diferencaEmSegundosEntre(dataInicio.apply(solicitacao).withZoneSameInstant(zoneId), dataFim.apply(solicitacao).withZoneSameInstant(java.time.ZoneId.of("America/Sao_Paulo"))))
                 .sum() / solicitacoes.size();
     }
 }

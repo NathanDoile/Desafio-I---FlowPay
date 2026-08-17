@@ -62,6 +62,7 @@ public class TelaMetricasGeraisService {
                 .totalAtendimentos((long) finalizadas.size())
                 .totalTicketsRecusados((long) recusadas.size())
                 .mediaTicketsRecusadosPorDia(mediaTicketsRecusadosPorDia)
+                .taxaRecusa(solicitacoesDoMes.isEmpty() ? 0 : (double) recusadas.size() / solicitacoesDoMes.size())
                 .equipe(equipesResponse)
                 .build();
     }
@@ -123,6 +124,7 @@ public class TelaMetricasGeraisService {
             Long mediaTicketsRecusadosPorDiaEquipe = calcularMediaPorDia(recusadasEquipe.size(), diasNoMes);
 
             response.add(MetricasGeraisEquipeResponse.builder()
+                    .nome(equipe.getCategoria())
                     .tempoMedioAtendimento(tempoMedioAtendimentoEquipe)
                     .tempoMedioEspera(tempoMedioEsperaEquipe)
                     .totalAtendimentos((long) finalizadasEquipe.size())

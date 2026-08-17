@@ -106,12 +106,16 @@ class TelaDetalheServiceTest {
         ZonedDateTime agora = DateTimeNow.now();
 
         Solicitacao solicitacaoFinalizada1 = solicitacao(FINALIZADO);
+        solicitacaoFinalizada1.setDataHoraInicialSolicitacao(agora.minusSeconds(150));
         solicitacaoFinalizada1.setDataHoraInicialFila(agora.minusSeconds(120));
         solicitacaoFinalizada1.setDataHoraInicialAtendimento(agora.minusSeconds(90));
+        solicitacaoFinalizada1.setDataHoraFinalAtendimento(agora.minusSeconds(60));
 
         Solicitacao solicitacaoFinalizada2 = solicitacao(FINALIZADO);
+        solicitacaoFinalizada2.setDataHoraInicialSolicitacao(agora.minusSeconds(150));
         solicitacaoFinalizada2.setDataHoraInicialFila(agora.minusSeconds(100));
         solicitacaoFinalizada2.setDataHoraInicialAtendimento(agora.minusSeconds(70));
+        solicitacaoFinalizada2.setDataHoraFinalAtendimento(agora.minusSeconds(60));
 
         equipe.getFila().getSolicitacoes().add(solicitacaoFinalizada1);
         equipe.getFila().getSolicitacoes().add(solicitacaoFinalizada2);

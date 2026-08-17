@@ -25,6 +25,7 @@ public class SolicitacaoMapper {
                 .referenciaConversa(solicitacaoRetorno.getReferenciaConversa())
                 .statusSolicitacao(solicitacaoRetorno.getStatusSolicitacao())
                 .assunto(solicitacaoRetorno.getAssunto())
+                .dataHoraInicialSolicitacao(solicitacaoRetorno.getDataHoraInicialSolicitacao())
                 .build();
     }
 }

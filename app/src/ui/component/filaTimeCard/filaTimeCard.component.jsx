@@ -1,9 +1,21 @@
-import { ArrowUpRight, Clock, Users } from "lucide-react"
+import { ArrowUpRight, Clock, Users, CreditCard, HandCoins, MessagesSquare } from "lucide-react"
 import {BG_AZUL_ESCURO, BG_LARANJA, TEXTO_AZUL_BG_BRANCO, TEXTO_CINZA_BG_AZUL, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO, TEXTO_PRETO_BG_LARANJA} from '../../../constants/cores.constant.jsx';
 
 export function FilaTimeCard({ equipe, onClick }){
 
-    const Icon = equipe.icone;
+    let Icon;
+
+    if(equipe.nome == "CARTAO"){
+        Icon = CreditCard;
+    }
+    else if(equipe.nome == "EMPRESTIMOS"){
+        Icon = HandCoins;
+    }
+    else{
+        Icon = MessagesSquare;
+    }
+
+    const mediaTempoEsperaEmMinutos = Math.floor(equipe.mediaTempoEsperaEmSegundos / 60);
 
     return(
         <article className="group flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
@@ -15,11 +27,11 @@ export function FilaTimeCard({ equipe, onClick }){
                         <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <div>
-                        <h2 className={`text-sm font-semibold uppercase tracking-wide ${TEXTO_PRETO_BG_BRANCO}`}>{equipe.categoria}</h2>
+                        <h2 className={`text-sm font-semibold uppercase tracking-wide ${TEXTO_PRETO_BG_BRANCO}`}>{equipe.nome}</h2>
                     </div>
                 </div>
                 
-                <ArrowUpRight onClick={() => onClick(equipe.id)}
+                <ArrowUpRight onClick={() => onClick(equipe.nome)}
                     className={`h-5 w-5 ${TEXTO_CINZA_BG_BRANCO} transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 cursor-pointer`}
                     aria-hidden="true"
                 />
@@ -28,16 +40,16 @@ export function FilaTimeCard({ equipe, onClick }){
             <div className="mt-6 flex items-end justify-between">
                 <div>
                     <p className={`text-xs font-medium uppercase tracking-wide ${TEXTO_CINZA_BG_BRANCO}`}>Tickets na fila</p>
-                    <p className={`mt-1 text-5xl font-bold tabular-nums ${TEXTO_CINZA_BG_BRANCO}`}>{equipe.quantidadeEmFila}</p>
+                    <p className={`mt-1 text-5xl font-bold tabular-nums ${TEXTO_CINZA_BG_BRANCO}`}>{equipe.quantidadeTicketsEmFila}</p>
                 </div>
                 
                 <span
                     className={`mb-2 inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${
-                        equipe.quantidadeEmFila === 0 ? `${BG_AZUL_ESCURO} ${TEXTO_CINZA_BG_AZUL}` : `${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`
+                        equipe.quantidadeTicketsEmFila === 0 ? `${BG_AZUL_ESCURO} ${TEXTO_CINZA_BG_AZUL}` : `${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`
                     }`}
-                    aria-hidden={equipe.quantidadeEmFila === 0}
+                    aria-hidden={equipe.quantidadeTicketsEmFila === 0}
                     >
-                    {equipe.quantidadeEmFila === 0 ? "Vazia" : "Aguardando"}
+                    {equipe.quantidadeTicketsEmFila === 0 ? "Vazia" : "Aguardando"}
                 </span>
             </div>
 
@@ -58,7 +70,7 @@ export function FilaTimeCard({ equipe, onClick }){
                     <Clock className={`h-4 w-4 ${TEXTO_AZUL_BG_BRANCO}`} aria-hidden="true" />
 
                     <div>
-                        <p className={`text-sm font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>{equipe.mediaTempoEspera} min</p>
+                        <p className={`text-sm font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>{mediaTempoEsperaEmMinutos} min</p>
                         <p className={`text-xs ${TEXTO_CINZA_BG_BRANCO}`}>Espera média</p>
                     </div>
 

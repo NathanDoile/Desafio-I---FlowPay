@@ -1,16 +1,12 @@
 import { Headset } from "lucide-react"
-import {equipesMock, listaEquipesMock} from '../../../mocks/equipes.mock.js';
+import { listaEquipesMock} from '../../../mocks/equipes.mock.js';
 import {formatClock} from '../../../utils/time.js';
 import { BG_AZUL_ESCURO, BG_LARANJA, TEXTO_CINZA_BG_AZUL, TEXTO_PRETO_BG_LARANJA } from '../../../constants/cores.constant.jsx';
 import { useNavigate } from "react-router-dom";
 
-export function CabecalhoDetalheFila({equipeSelecionada, horarioAtual, onSelecionarEquipe}){
+export function CabecalhoDetalheFila({nomeEquipe, equipe, horarioAtual, onSelecionarEquipe}){
 
     const navigate = useNavigate();
-
-    const equipe = equipesMock[equipeSelecionada];
-
-    const atendentesAtivos = equipe.atendentes.filter((a) => a.status !== "pausa").length;
 
     const horarioFormatado = horarioAtual ? formatClock(horarioAtual) : "--:--:--";
 
@@ -32,7 +28,7 @@ export function CabecalhoDetalheFila({equipeSelecionada, horarioAtual, onSelecio
                     </p>
 
                     <h1 className="text-2xl font-semibold leading-tight text-balance">
-                        {equipe.nome}
+                        {nomeEquipe}
                     </h1>
                 </div>
 
@@ -42,8 +38,8 @@ export function CabecalhoDetalheFila({equipeSelecionada, horarioAtual, onSelecio
                 <div>
                     <p className={`text-xs uppercase tracking-wide ${TEXTO_CINZA_BG_AZUL}`}>Atendentes ativos</p>
                     <p className="font-mono text-lg font-semibold">
-                        {atendentesAtivos}
-                        <span className={`${TEXTO_CINZA_BG_AZUL}`}>/{equipe.atendentes.length}</span>
+                        {equipe.quantidadeAtendentes}
+                        <span className={`${TEXTO_CINZA_BG_AZUL}`}>/{equipe.quantidadeAtendentes}</span>
                     </p>
                 </div>
 
@@ -56,11 +52,10 @@ export function CabecalhoDetalheFila({equipeSelecionada, horarioAtual, onSelecio
             </div>
         </div>
 
-        {/* Abas / Seletor de Equipe */}
         <nav aria-label="Equipes" className="flex flex-wrap gap-2">
           {listaEquipesMock.map((item) => {
-            const isAtiva = item.id === equipe.id;
-            
+            const isAtiva = item.id === nomeEquipe;
+
             return (
               <button
                 key={item.id}

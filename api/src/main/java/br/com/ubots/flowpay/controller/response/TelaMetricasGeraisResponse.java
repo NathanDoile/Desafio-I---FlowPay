@@ -19,5 +19,7 @@ public class TelaMetricasGeraisResponse {
 
     private Long mediaTicketsRecusadosPorDia;
 
+    private Double taxaRecusa;
+
     private List<MetricasGeraisEquipeResponse> equipe;
 }

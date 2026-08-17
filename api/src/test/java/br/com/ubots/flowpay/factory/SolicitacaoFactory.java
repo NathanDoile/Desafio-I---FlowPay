@@ -26,7 +26,9 @@ public class SolicitacaoFactory {
                 .referenciaConversa(20260731000001L)
                 .statusSolicitacao(statusSolicitacao)
                 .assunto(EMPRESTIMO.getDescricao())
+                .dataHoraInicialSolicitacao(DateTimeNow.now().minusSeconds(60))
                 .dataHoraInicialFila(DateTimeNow.now().minusSeconds(30))
+                .dataHoraInicialAtendimento(DateTimeNow.now())
                 .versao(0L)
                 .build();
     }

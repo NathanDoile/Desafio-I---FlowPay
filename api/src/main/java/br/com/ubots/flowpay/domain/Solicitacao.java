@@ -32,12 +32,16 @@ public class Solicitacao {
     @Version
     private Long versao;
 
+    @Column(columnDefinition = "DATETIME")
     private ZonedDateTime dataHoraInicialSolicitacao;
 
+    @Column(columnDefinition = "DATETIME")
     private ZonedDateTime dataHoraInicialFila;
 
+    @Column(columnDefinition = "DATETIME")
     private ZonedDateTime dataHoraInicialAtendimento;
 
+    @Column(columnDefinition = "DATETIME")
     private ZonedDateTime dataHoraFinalAtendimento;
 
     @ManyToOne

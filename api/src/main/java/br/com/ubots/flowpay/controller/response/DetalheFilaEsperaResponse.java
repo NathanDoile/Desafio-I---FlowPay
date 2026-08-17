@@ -2,7 +2,7 @@ package br.com.ubots.flowpay.controller.response;
 
 import lombok.*;
 
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -15,5 +15,5 @@ public class DetalheFilaEsperaResponse {
 
     private Long protocolo;
 
-    private LocalTime horaEntrouNaFila;
+    private ZonedDateTime dataHoraEntrouNaFila;
 }

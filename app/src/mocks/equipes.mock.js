@@ -1,8 +1,8 @@
 // Exportamos a lista simplificada para os botões do cabeçalho
 export const listaEquipesMock = [
-  { id: "CARTOES", nome: "Cartões" },
+  { id: "CARTAO", nome: "Cartões" },
   { id: "EMPRESTIMOS", nome: "Empréstimos" },
-  { id: "OUTROS_ASSUNTOS", nome: "Outros Assuntos" },
+  { id: "OUTROS ASSUNTOS", nome: "Outros Assuntos" },
 ];
 
 // Nosso "Banco de Dados" principal
