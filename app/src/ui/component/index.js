@@ -13,3 +13,4 @@ export {CabecalhoMetricas} from './cabecalho/cabecalhoMetricas.component.jsx';
 export {MetricasGeraisCard} from './metricasGeraisCard/metricasGeraisCards.component.jsx';
 export {Graficos} from './graficos/graficos.component.jsx';
 export {TabelaMetricas} from './tabelaMetricas/tabelaMetricas.component.jsx';
+export {Loading} from './loading/loading.component.jsx';

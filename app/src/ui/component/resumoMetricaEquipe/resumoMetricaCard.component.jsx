@@ -3,8 +3,6 @@ import { formatHumanDuration } from "../../../utils/time.js";
 import { MetricCard } from "../metricaCard/metricaCard.component.jsx";
 
 export function ResumoMetricaCard({equipe}){
-
-    const emAtendimento = equipe.atendentes.filter((a) => a.status === "em-atendimento").length;
     
     return (
     <section aria-label="Métricas gerais da equipe" className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -12,29 +10,29 @@ export function ResumoMetricaCard({equipe}){
       <MetricCard
         icone={<Clock className="h-4 w-4" aria-hidden="true" />}
         titulo="Tempo médio"
-        valor={formatHumanDuration(equipe.tempoMedioAtendimentoSegundos)}
+        valor={formatHumanDuration(equipe.tempoMedioAtendimento)}
         descricao="Média por atendimento"
       />
       
       <MetricCard
         icone={<CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
         titulo="Concluídos hoje"
-        valor={String(equipe.concluidosHoje)}
+        valor={String(equipe.quantidadeAtendimentosConcluidos)}
         descricao="Atendimentos finalizados"
       />
       
       <MetricCard
         icone={<Hourglass className="h-4 w-4" aria-hidden="true" />}
         titulo="Espera média"
-        valor={formatHumanDuration(equipe.tempoMedioEsperaSegundos)}
+        valor={formatHumanDuration(equipe.tempoMedioEspera)}
         descricao="Tempo médio na fila"
       />
       
       <MetricCard
         icone={<Users className="h-4 w-4" aria-hidden="true" />}
         titulo="Em atendimento"
-        valor={`${emAtendimento}`}
-        descricao={`De ${equipe.atendentes.length} atendentes na equipe`}
+        valor={`${equipe.quantidadeAtendimentosEmAndamento}`}
+        descricao={`De ${equipe.quantidadeAtendentes} atendentes na equipe`}
       />
       
     </section>

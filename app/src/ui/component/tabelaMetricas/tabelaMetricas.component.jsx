@@ -36,8 +36,8 @@ export function TabelaMetricas({ equipes, empresa }){
           
           <tbody>
             {/* Mapeando as equipes do nosso mock */}
-            {equipes.map((t) => (
-              <tr key={t.key} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+            {equipes?.map((t) => (
+              <tr key={t.nome} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
                 <td className="px-5 py-3.5">
                   <span className={`flex items-center gap-2 font-medium ${TEXTO_PRETO_BG_BRANCO}`}>
                     <span
@@ -48,19 +48,19 @@ export function TabelaMetricas({ equipes, empresa }){
                   </span>
                 </td>
                 <td className={`px-5 py-3.5 text-right tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                  {formatMinutes(t.tempoMedioAtendimento)}
+                  {formatMinutes(t.tempoMedioAtendimento/60)}
                 </td>
                 <td className={`px-5 py-3.5 text-right tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                  {formatMinutes(t.tempoMedioEspera)}
+                  {formatMinutes(t.tempoMedioEspera/60)}
                 </td>
                 <td className={`px-5 py-3.5 text-right tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
                   {formatNumber(t.totalAtendimentos)}
                 </td>
                 <td className={`px-5 py-3.5 text-right tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                  {formatNumber(t.totalRecusados)}
+                  {formatNumber(t.totalTicketsRecusados)}
                 </td>
                 <td className={`px-5 py-3.5 text-right tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                  {t.mediaRecusadosFilaCheia}/dia
+                  {t.mediaTicketsRecusadosPorDia}/dia
                 </td>
               </tr>
             ))}
@@ -70,23 +70,23 @@ export function TabelaMetricas({ equipes, empresa }){
               <td className="px-5 py-4">
                 <span className={`flex items-center gap-2 font-semibold ${TEXTO_PRETO_BG_BRANCO}`}>
                   <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${BG_LARANJA}`} aria-hidden="true" />
-                  {empresa.nome}
+                  {"FlowPay"}
                 </span>
               </td>
               <td className={`px-5 py-4 text-right font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                {formatMinutes(empresa.tempoMedioAtendimento)}
+                {formatMinutes(empresa.tempoMedioAtendimento/60)}
               </td>
               <td className={`px-5 py-4 text-right font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                {formatMinutes(empresa.tempoMedioEspera)}
+                {formatMinutes(empresa.tempoMedioEspera/60)}
               </td>
               <td className={`px-5 py-4 text-right font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
                 {formatNumber(empresa.totalAtendimentos)}
               </td>
               <td className={`px-5 py-4 text-right font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                {formatNumber(empresa.totalRecusados)}
+                {formatNumber(empresa.totalTicketsRecusados)}
               </td>
               <td className={`px-5 py-4 text-right font-semibold tabular-nums ${TEXTO_PRETO_BG_BRANCO}`}>
-                {empresa.mediaRecusadosFilaCheia}/dia
+                {empresa.mediaTicketsRecusadosPorDia}/dia
               </td>
             </tr>
           </tbody>

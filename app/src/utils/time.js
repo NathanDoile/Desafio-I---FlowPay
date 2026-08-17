@@ -25,7 +25,7 @@ export function formatHumanDuration(totalSeconds) {
 
 /** Segundos decorridos desde um instante ISO até "now" (ms). */
 export function elapsedSeconds(isoDate, now) {
-  return (now - new Date(isoDate).getTime()) / 1000;
+  return (now - new Date(isoDate)) / 1000;
 }
 
 /** Formata um horário ISO como "HH:MM:SS". */

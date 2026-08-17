@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label }) => {
               
               {/* O valor alinhado à direita (trocando ponto por vírgula no padrão BR) */}
               <span className="font-medium text-gray-900">
-                {String(entry.value).replace('.', ',')}
+                {String(entry.value?.toFixed(2)).replace('.', ',')}
               </span>
             </div>
           ))}
@@ -47,21 +47,34 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export function Graficos({ equipes, empresa }){
 
-  const tempoData = equipes.map((t) => ({
+  const tempoData = equipes?.map((t) => ({
     equipe: t.nome,
-    atendimento: t.tempoMedioAtendimento,
-    espera: t.tempoMedioEspera,
+    atendimento: t.tempoMedioAtendimento/60,
+    espera: t.tempoMedioEspera/60,
   }));
 
   const atendimentosData = [
-    ...equipes.map((t) => ({ equipe: t.nome, total: t.totalAtendimentos, geral: false, fill:"lab(20.6116 -0.0234246 -27.6176)" })),
-    { equipe: "Empresa", total: empresa.totalAtendimentos, geral: true, fill:"lab(78.8702 18.9326 41.9203)" },
+    // Se equipes.map for undefined, ele espalha um array vazio [] (não dá erro)
+    ...(equipes?.map((t) => ({ 
+      equipe: t.nome, 
+      total: t.totalAtendimentos, 
+      geral: false, 
+      fill:"lab(20.6116 -0.0234246 -27.6176)" 
+    })) || []),
+    
+    // Protege também o objeto empresa
+    { 
+      equipe: "Empresa", 
+      total: empresa?.totalAtendimentos || 0, 
+      geral: true, 
+      fill:"lab(78.8702 18.9326 41.9203)" 
+    },
   ];
 
-  const recusaData = equipes.map((t) => ({
+  const recusaData = equipes?.map((t) => ({
     equipe: t.nome,
-    recusados: t.totalRecusados,
-    filaCheia: t.mediaRecusadosFilaCheia,
+    recusados: t.totalTicketsRecusados,
+    filaCheia: t.mediaTicketsRecusadosPorDia,
   }));
 
     return (

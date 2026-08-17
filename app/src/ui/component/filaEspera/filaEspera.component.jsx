@@ -1,10 +1,10 @@
 import { Inbox, Timer } from "lucide-react";
-import { elapsedFromMinsAgo, formatClockMs, formatDuration } from "../../../utils/time.js";
+import { elapsedFromMinsAgo, formatClock, formatDuration, elapsedSeconds } from "../../../utils/time.js";
 import { BG_AZUL_ESCURO, TEXTO_AZUL_BG_BRANCO, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from "../../../constants/cores.constant.jsx";
 
 export function FilaEspera({ equipe, anchor, now }){
-
-    const ocupacao = equipe.tickets.length;
+    
+    const ocupacao = equipe?.fila?.length;
     const capacidade = equipe.capacidadeFila;
     const porcentagemPreenchida = Math.min(100, Math.round((ocupacao / capacidade) * 100));
     const quaseCheia = porcentagemPreenchida >= 80;
@@ -48,18 +48,17 @@ export function FilaEspera({ equipe, anchor, now }){
 
       {/* Lista de Tickets */}
       <ul className="divide-y divide-gray-200">
-        {equipe.tickets.map((ticket) => {
+        {equipe?.fila?.map((ticket) => {
           // Calcula o tempo de espera real baseado na âncora do useClock
           const esperou =
-            anchor === null || now === null ? null : elapsedFromMinsAgo(anchor, now, ticket.entrouMinutosAtras);
+            anchor === null || now === null ? null : elapsedFromMinsAgo(anchor, now, (elapsedSeconds(ticket.dataHoraEntrouNaFila, now) / 60));
             
           // Verifica se o cliente já passou da média de espera da fila
-          const esperaLonga = esperou !== null && esperou > equipe.tempoMedioEsperaSegundos;
+          const esperaLonga = esperou !== null && esperou > equipe.tempoMedioEspera;
           
           // Calcula a hora exata que ele entrou
-          const horaQueEntrou =
-            anchor === null ? null : formatClockMs(anchor - ticket.entrouMinutosAtras * 60_000);
-
+          const horaQueEntrou = formatClock(ticket.dataHoraEntrouNaFila);
+          
           return (
             <li key={ticket.protocolo} className="flex items-center justify-between gap-4 p-5 hover:bg-gray-50 transition-colors">
               
@@ -98,7 +97,7 @@ export function FilaEspera({ equipe, anchor, now }){
         })}
 
         {/* Mensagem caso a fila esteja vazia */}
-        {equipe.tickets.length === 0 ? (
+        {equipe?.tickets?.length === 0 ? (
           <li className={`p-8 text-center text-sm ${TEXTO_CINZA_BG_BRANCO}`}>Nenhum ticket em fila. A equipe está com tempo livre!</li>
         ) : null}
       </ul>

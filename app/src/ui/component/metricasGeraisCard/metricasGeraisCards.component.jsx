@@ -6,13 +6,13 @@ function buildKpis(empresa) {
   return [
     {
       label: "Tempo médio de atendimento",
-      value: formatMinutes(empresa.tempoMedioAtendimento),
+      value: formatMinutes(empresa.tempoMedioAtendimento/60),
       hint: "Média ponderada da empresa",
       icon: Clock,
     },
     {
       label: "Tempo médio de espera em fila",
-      value: formatMinutes(empresa.tempoMedioEspera),
+      value: formatMinutes(empresa.tempoMedioEspera/60),
       hint: "Média ponderada da empresa",
       icon: Hourglass,
     },
@@ -24,14 +24,14 @@ function buildKpis(empresa) {
     },
     {
       label: "Total de tickets recusados",
-      value: formatNumber(empresa.totalRecusados),
-      hint: `Taxa de recusa de ${empresa.taxaRecusa}%`,
+      value: formatNumber(empresa.totalTicketsRecusados),
+      hint: `Taxa de recusa de ${Number(empresa?.taxaRecusa || 0)?.toFixed(2)}%`,
       icon: XCircle,
       accent: true, // Acende o alerta laranja!
     },
     {
       label: "Média recusados por fila cheia",
-      value: `${empresa.mediaRecusadosFilaCheia}/dia`,
+      value: `${empresa.mediaTicketsRecusadosPorDia}/dia`,
       hint: "Média entre as equipes",
       icon: Ban,
       accent: true, // Acende o alerta laranja!
@@ -42,7 +42,7 @@ function buildKpis(empresa) {
 export function MetricasGeraisCard({empresa}){
 
     const kpis = buildKpis(empresa);
-
+    
     return (
     <section aria-label="Métricas gerais da empresa">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">

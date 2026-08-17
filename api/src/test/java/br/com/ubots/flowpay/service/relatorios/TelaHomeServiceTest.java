@@ -38,7 +38,7 @@ class TelaHomeServiceTest {
         List<Equipe> equipes = new ArrayList<>();
 
         Equipe equipeI = equipe(CARTAO);
-        equipeI.getFila().getSolicitacoes().add(solicitacao(StatusSolicitacao.EM_FILA));
+        equipeI.getFila().getSolicitacoes().add(solicitacao(StatusSolicitacao.EM_ATENDIMENTO));
         Equipe equipeII = equipe(EMPRESTIMO);
         Equipe equipeIII = equipe(OUTROS_ASSUNTOS);
 
@@ -52,7 +52,7 @@ class TelaHomeServiceTest {
 
         verify(equipeRepository).findAll();
 
-        assertEquals(1L, response.getTotalTickets());
+        assertEquals(0L, response.getTotalTickets());
         assertEquals(0L, response.getQuantidadeAtendentes());
         assertEquals(3L, response.getQuantidadeEquipes());
 
@@ -60,12 +60,7 @@ class TelaHomeServiceTest {
             assertNotNull(homeEquipeResponse.getId());
             assertNotNull(homeEquipeResponse.getNome());
 
-            if(homeEquipeResponse.getNome().equals(Categoria.CARTAO.getDescricao())){
-                assertEquals(1L, homeEquipeResponse.getQuantidadeTicketsEmFila());
-            }
-            else{
-                assertEquals(0L, homeEquipeResponse.getQuantidadeTicketsEmFila());
-            }
+            assertEquals(0L, homeEquipeResponse.getQuantidadeTicketsEmFila());
 
             assertEquals(0L, homeEquipeResponse.getQuantidadeAtendentes());
 
