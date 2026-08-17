@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { CabecalhoMetricas, Graficos, MetricasGeraisCard, TabelaMetricas, Loading } from "../../component/index.js";
-import { useNavigate } from "react-router-dom";
 import { useObterMetricasGerais } from "../../../hooks/index.js";
 import { converterDataParaSeletor } from "../../../utils/date.js";
 
@@ -9,8 +8,6 @@ export function MetricasFilas() {
     const [periodoSelecionado, setPeriodoSelecionado] = useState(new Date().toISOString().split('T')[0]);
     
     const [carregando, setCarregando] = useState(false);
-
-    const navigate = useNavigate();
 
     const {obterMetricasGerais} = useObterMetricasGerais();
 
