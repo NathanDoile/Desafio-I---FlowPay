@@ -12,8 +12,6 @@ export function DetalheFila(){
 
     const equipeDefault = location.state?.equipeDesejada;
 
-    console.log(location);
-
     const [equipeSelecionada, setEquipeSelecionada] = useState(equipeDefault ?? "CARTAO");
 
     const { anchor, now } = useClock(1000);
