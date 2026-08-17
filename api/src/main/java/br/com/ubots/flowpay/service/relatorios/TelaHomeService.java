@@ -9,6 +9,7 @@ import br.com.ubots.flowpay.repository.EquipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosParaAgo
 public class TelaHomeService {
 
     private final EquipeRepository equipeRepository;
+
+    private final ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
     public TelaHomeResponse gerarHome() {
 
@@ -67,9 +70,9 @@ public class TelaHomeService {
         List<Solicitacao> solicitacoesEmFila = equipe.getFila().getSolicitacoes()
                 .stream()
                 .filter(solicitacao -> solicitacao.getStatusSolicitacao().equals(FINALIZADO) || solicitacao.getStatusSolicitacao().equals(EM_ATENDIMENTO))
-                .filter(solicitacao -> solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(java.time.ZoneId.of("America/Sao_Paulo")).getDayOfMonth() == hoje.getDayOfMonth()
-                    && solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(java.time.ZoneId.of("America/Sao_Paulo")).getMonth().equals(hoje.getMonth())
-                    && solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(java.time.ZoneId.of("America/Sao_Paulo")).getYear() == hoje.getYear()
+                .filter(solicitacao -> solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId).getDayOfMonth() == hoje.getDayOfMonth()
+                    && solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId).getMonth().equals(hoje.getMonth())
+                    && solicitacao.getDataHoraInicialSolicitacao().withZoneSameInstant(zoneId).getYear() == hoje.getYear()
                 )
                 .toList();
 
@@ -79,7 +82,7 @@ public class TelaHomeService {
 
         Long somaTemposEmFila = solicitacoesEmFila
                 .stream()
-                .map(solicitacao -> diferencaEmSegundosEntre(solicitacao.getDataHoraInicialFila().withZoneSameInstant(java.time.ZoneId.of("America/Sao_Paulo")), solicitacao.getDataHoraInicialAtendimento().withZoneSameInstant(java.time.ZoneId.of("America/Sao_Paulo"))))
+                .map(solicitacao -> diferencaEmSegundosEntre(solicitacao.getDataHoraInicialFila().withZoneSameInstant(zoneId), solicitacao.getDataHoraInicialAtendimento().withZoneSameInstant(zoneId)))
                 .reduce(0L, Long::sum);
 
         return somaTemposEmFila / solicitacoesEmFila.size();

@@ -2,7 +2,6 @@ package br.com.ubots.flowpay.controller.response;
 
 import lombok.*;
 
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
 @Builder
