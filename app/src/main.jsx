@@ -5,7 +5,7 @@ import App from './App.jsx'
 import * as Sentry from "@sentry/react";
 
 Sentry.init({
-  dsn: "https://ca230bf25474b92c862e2e5204afaf59@o4511927711563776.ingest.us.sentry.io/4511927734304768",
+  dsn: import.meta.env.VITE_DSN_SENTRY,
 
   dataCollection: {},
   
