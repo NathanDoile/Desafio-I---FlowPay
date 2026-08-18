@@ -99,4 +99,16 @@ describe('Hook: useObterDetalheEquipe', () => {
         expect(toast.error).toHaveBeenCalledWith('Equipe não encontrada no sistema.');
     });
 
+    it('Deve exibir a mensagem padrão caso a API falhe sem fornecer um error.message', async () => {
+        // Simulamos um erro vazio, sem a propriedade "message"
+        const erroSemMessage = new Error(); 
+        erroSemMessage.message = undefined; 
+        obterDetalheEquipeApi.mockRejectedValue(erroSemMessage);
+
+        const { result } = renderHook(() => useObterDetalheEquipe());
+        await result.current.obterDetalheEquipe();
+
+        // Confirma se o Toast usou a string de fallback
+        expect(toast.error).toHaveBeenCalledWith('Não foi possível carregar os dados da Home.');
+    });
 });

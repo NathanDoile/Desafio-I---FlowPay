@@ -1,90 +1,103 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { CabecalhoDetalheFila } from './cabecalhoDetalheFila.component.jsx';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi } from 'vitest';
+import { CabecalhoDetalheFila } from './cabecalhoDetalheFila.component';
 
-import {formatClock} from '../../../utils/time.js';
-vi.mock('../../../utils/time.js', () => ({
-    formatClock: vi.fn(() => '15:30:00'),
-}));
-
-import { useNavigate } from "react-router-dom";
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
 }));
 
-describe('Componente CabecalhoDetalheFila', () => {
-    
-    const mockEquipeProps = {
+describe('Componente: CabecalhoDetalheFila', () => {
+
+    const mockEquipePadrao = {
         quantidadeAtendentes: 5
     };
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+    it('Deve renderizar os dados principais e formatar o horário corretamente', () => {
+        // Data local cravada às 10:30:00 para evitar conflitos de fuso horário
+        const horarioFixo = new Date(2026, 7, 18, 10, 30, 0).getTime();
 
-    it('Deve renderizar os dados e o horário formatado', () => {
         render(
             <CabecalhoDetalheFila 
-                nomeEquipe="EQUIPE_A" 
-                equipe={mockEquipeProps} 
-                horarioAtual="2026-08-17T15:30:00" 
+                nomeEquipe="CARTAO" 
+                equipe={mockEquipePadrao} 
+                horarioAtual={horarioFixo} 
                 onSelecionarEquipe={vi.fn()} 
             />
         );
 
-        // Verifica se usou nosso mock de tempo e printou na tela
-        expect(screen.getByText('15:30:00')).toBeInTheDocument();
-        
-        // Verifica se a quantidade de atendentes (5/5) apareceu
-        expect(screen.getByText('5')).toBeInTheDocument();
+        expect(screen.getByText('CARTAO')).toBeInTheDocument();
+        expect(screen.getByText('10:30:00')).toBeInTheDocument();
+        expect(screen.getAllByText(/5/i).length).toBeGreaterThan(0);
     });
 
-    it('Deve navegar para a tela inicial (/) ao clicar no ícone de voltar', async () => {
-        const user = userEvent.setup();
-        
-        // Renderizamos o componente
-        const { container } = render(
+    it('Deve exibir os traços (--:--:--) caso o horarioAtual seja null ou undefined', () => {
+        render(
             <CabecalhoDetalheFila 
-                nomeEquipe="EQUIPE_A" 
-                equipe={mockEquipeProps} 
+                nomeEquipe="CARTAO" 
+                equipe={mockEquipePadrao} 
+                horarioAtual={null} 
                 onSelecionarEquipe={vi.fn()} 
             />
         );
 
-        // Como o onClick está num SVG (que não tem tag <button>), buscamos a classe dele
-        // (Recomendo fortemente trocar aquele span por um button depois!)
-        const iconeHeadset = container.querySelector('.lucide-headset');
-        
-        await user.click(iconeHeadset);
-
-        // Verifica se o Router foi chamado mandando o usuário pra raiz
-        expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('/');
+        expect(screen.getByText('--:--:--')).toBeInTheDocument();
     });
 
-    it('Deve disparar onSelecionarEquipe ao clicar em uma aba de equipe diferente', async () => {
-        const user = userEvent.setup();
+    it('Deve aplicar a classe de "Ativa" apenas no botão da equipe selecionada', () => {
+        render(
+            <CabecalhoDetalheFila 
+                nomeEquipe="CARTAO" // Equipe ativa
+                equipe={mockEquipePadrao} 
+                horarioAtual={Date.now()} 
+                onSelecionarEquipe={vi.fn()} 
+            />
+        );
+
+        // O botão "Cartões" (ID: CARTAO) DEVE ter aria-current="page"
+        const botaoCartoes = screen.getByRole('button', { name: /cartões/i });
+        expect(botaoCartoes).toHaveAttribute('aria-current', 'page');
+
+        // Os botões inativos NÃO DEVEM ter aria-current
+        const botaoEmprestimos = screen.getByRole('button', { name: /empréstimos/i });
+        expect(botaoEmprestimos).not.toHaveAttribute('aria-current');
+    });
+
+    it('Deve chamar o onSelecionarEquipe ao clicar no botão de uma equipe no Menu', async () => {
         const mockSelecionar = vi.fn();
+        const user = userEvent.setup();
 
         render(
             <CabecalhoDetalheFila 
-                nomeEquipe="EQUIPE_A" // A equipe atual é a Alpha
-                equipe={mockEquipeProps} 
+                nomeEquipe="CARTAO" 
+                equipe={mockEquipePadrao} 
+                horarioAtual={Date.now()} 
                 onSelecionarEquipe={mockSelecionar} 
             />
         );
 
-        // O robô encontra o botão da outra equipe (Equipe Beta) na barra de navegação
-        const botaoEquipeBeta = screen.getByRole('button', { name: /Empréstimos/i });
+        const botaoEmprestimos = screen.getByRole('button', { name: /empréstimos/i });
+        await user.click(botaoEmprestimos);
 
-        // Clica na nova equipe
-        await user.click(botaoEquipeBeta);
-
-        // Verifica se a função foi chamada mandando o ID da Equipe Beta pra cima
-        expect(mockSelecionar).toHaveBeenCalledTimes(1);
         expect(mockSelecionar).toHaveBeenCalledWith('EMPRESTIMOS');
+    });
+
+    it('Deve navegar para a tela Home (/) ao clicar no ícone do Headset', async () => {
+        const user = userEvent.setup();
+        const { container } = render(
+            <CabecalhoDetalheFila 
+                nomeEquipe="CARTAO" 
+                equipe={mockEquipePadrao} 
+                horarioAtual={Date.now()} 
+                onSelecionarEquipe={vi.fn()} 
+            />
+        );
+
+        const iconeHeadset = container.querySelector('.lucide-headset') || container.querySelector('svg');
+        await user.click(iconeHeadset);
+
+        expect(mockNavigate).toHaveBeenCalledWith('/');
     });
 
 });

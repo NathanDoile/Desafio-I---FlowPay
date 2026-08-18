@@ -8,5 +8,17 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './setupTests.js',
     css: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'], 
+      exclude: [
+        'node_modules/',
+        'src/main.jsx',
+        'src/app.jsx', 
+        '**/*.constant.jsx', // Não testamos constantes
+        '**/*.mock.js',
+        '**/*.test.{js,jsx}', // Não faz sentido o teste testar o próprio teste
+      ],
+    },
   },
 })

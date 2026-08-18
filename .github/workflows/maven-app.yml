@@ -23,6 +23,19 @@ jobs:
         with:
           fetch-depth: 0 
 
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências
+        working-directory: ./app
+        run: npm ci
+
+      - name: Executar testes e gerar relatório LCOV
+        working-directory: ./app
+        run: npm run test:coverage 
+
       - name: Analisar com SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -35,4 +48,6 @@ jobs:
             -Dsonar.organization=nathandoile
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.sources=.
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/*.test.js,**/*.test.jsx,**/setupTests.js
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info

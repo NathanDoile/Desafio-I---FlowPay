@@ -72,4 +72,132 @@ describe('Componente FilaEspera', () => {
         expect(tempoExibido).toHaveClass('text-red-600');
     });
 
+    it('Deve renderizar a fila normalmente com ocupação baixa (Barra e texto normais)', () => {
+        const mockEquipe = {
+            capacidadeFila: 10,
+            tempoMedioEspera: 600, // 10 minutos
+            fila: [
+                { protocolo: '123', assunto: 'Dúvida', dataHoraEntrouNaFila: new Date().toISOString() }
+            ],
+            tickets: [{}] // Tem ticket, não deve mostrar mensagem de vazia
+        };
+
+        render(<FilaEspera equipe={mockEquipe} anchor={Date.now()} now={Date.now()} />);
+
+        // Ocupação de 1 (10%) não deve ativar a classe de quase cheia
+        const spanOcupacao = screen.getByText('1');
+        expect(spanOcupacao).not.toHaveClass('text-red-600');
+    });
+
+    it('Deve alertar visualmente (Quase Cheia) quando a ocupação atingir 80% ou mais', () => {
+        const mockEquipe = {
+            capacidadeFila: 10,
+            tempoMedioEspera: 600,
+            // Criamos uma fila com 8 tickets (80% da capacidade)
+            fila: Array.from({ length: 8 }).map((_, i) => ({
+                protocolo: `PTK-${i}`,
+                assunto: 'Assunto',
+                dataHoraEntrouNaFila: new Date().toISOString()
+            })),
+            tickets: [{}]
+        };
+
+        render(<FilaEspera equipe={mockEquipe} anchor={Date.now()} now={Date.now()} />);
+
+        // A ocupação "8" DEVE estar com a classe vermelha
+        const spanOcupacao = screen.getByText('8');
+        expect(spanOcupacao).toHaveClass('text-red-600');
+    });
+
+    it('Deve exibir "--:--" quando o relógio (anchor ou now) for null', () => {
+        const mockEquipe = {
+            capacidadeFila: 10,
+            fila: [
+                { protocolo: '123', assunto: 'Problema', dataHoraEntrouNaFila: new Date().toISOString() }
+            ],
+            tickets: [{}]
+        };
+
+        // Passamos null forçando o componente a cair no fallback da Linha 74 e 91
+        render(<FilaEspera equipe={mockEquipe} anchor={null} now={null} />);
+
+        // Confirma que renderizou os traços em vez de bugar o cálculo
+        expect(screen.getByText('--:--')).toBeInTheDocument();
+    });
+
+    it('Deve destacar o cronômetro de espera em vermelho quando o ticket ultrapassar o tempo médio da equipe', () => {
+        const agora = new Date('2026-08-18T10:00:00.000Z').getTime();
+        const vinteMinutosAtras = new Date(agora - 20 * 60 * 1000).toISOString();
+
+        const mockEquipe = {
+            capacidadeFila: 10,
+            tempoMedioEspera: 300, // 5 minutos
+            fila: [
+                { protocolo: '999', assunto: 'Reclamação', dataHoraEntrouNaFila: vinteMinutosAtras }
+            ],
+            tickets: [{}]
+        };
+
+        render(<FilaEspera equipe={mockEquipe} anchor={agora} now={agora} />);
+
+        // Buscamos pelo texto com regex flexível que pega o elemento do cronômetro
+        const cronometro = screen.getByText(/10:00|20:00|600/i);
+        expect(cronometro).toHaveClass('text-red-600');
+    });
+
+    it('Deve exibir a mensagem de "tempo livre" quando a equipe não tiver tickets', () => {
+        const mockEquipe = {
+            capacidadeFila: 10,
+            fila: [], // Fila vazia
+            tickets: [] // <-- Esta é a variável que o seu componente avalia na linha 100
+        };
+
+        render(<FilaEspera equipe={mockEquipe} anchor={Date.now()} now={Date.now()} />);
+
+        // Verifica a mensagem de fallback da última linha do arquivo
+        expect(screen.getByText('Nenhum ticket em fila. A equipe está com tempo livre!')).toBeInTheDocument();
+    });
+
+    it('Deve retornar null na esperou quando apenas um dos relógios (anchor ou now) for null', () => {
+        const mockEquipe = {
+            capacidadeFila: 10,
+            fila: [{ protocolo: '123', assunto: 'Teste', dataHoraEntrouNaFila: new Date().toISOString() }],
+            tickets: [{}]
+        };
+
+        // Passamos anchor preenchido, mas now como null para cobrir o outro lado do ||
+        render(<FilaEspera equipe={mockEquipe} anchor={1000} now={null} />);
+
+        expect(screen.getByText('--:--')).toBeInTheDocument();
+    });
+
+    it('Deve retornar null na esperou quando anchor for null e now for preenchido', () => {
+        const mockEquipe = {
+            capacidadeFila: 10,
+            fila: [{ protocolo: '123', assunto: 'Teste', dataHoraEntrouNaFila: new Date().toISOString() }],
+            tickets: [{}]
+        };
+
+        // Passamos anchor como null e now preenchido para cobrir o primeiro lado do ||
+        render(<FilaEspera equipe={mockEquipe} anchor={null} now={1000} />);
+
+        expect(screen.getByText('--:--')).toBeInTheDocument();
+    });
+
+    it('Deve exibir "--:--:--" caso formatClock retorne null ou undefined para a hora de entrada', async () => {
+        // Importamos a função mockada e forçamos ela a retornar null só neste teste
+        const { formatClock } = vi.mocked(await import('../../../utils/time.js'));
+        formatClock.mockReturnValueOnce(null);
+
+        const mockEquipe = {
+            capacidadeFila: 10,
+            fila: [{ protocolo: '123', assunto: 'Teste', dataHoraEntrouNaFila: null }],
+            tickets: [{}]
+        };
+
+        render(<FilaEspera equipe={mockEquipe} anchor={1000} now={2000} />);
+
+        // Valida o fallback do operador ??
+        expect(screen.getByText('Entrou às --:--:--')).toBeInTheDocument();
+    });
 });

@@ -89,4 +89,16 @@ describe('Hook: useObterHome', () => {
         expect(toast.error).toHaveBeenCalledWith('Token expirado.');
     });
 
+    it('Deve exibir a mensagem padrão caso a API falhe sem fornecer um error.message', async () => {
+        // Simulamos um erro vazio, sem a propriedade "message"
+        const erroSemMessage = new Error(); 
+        erroSemMessage.message = undefined; 
+        obterHomeApi.mockRejectedValue(erroSemMessage);
+
+        const { result } = renderHook(() => useObterHome());
+        await result.current.obterHome();
+
+        // Confirma se o Toast usou a string de fallback
+        expect(toast.error).toHaveBeenCalledWith('Não foi possível carregar os dados da Home.');
+    });
 });

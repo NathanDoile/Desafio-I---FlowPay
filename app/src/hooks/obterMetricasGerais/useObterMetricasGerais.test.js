@@ -94,4 +94,16 @@ describe('Hook: useObterMetricasGerais', () => {
         expect(toast.error).toHaveBeenCalledWith('Data de métricas inválida.');
     });
 
+    it('Deve exibir a mensagem padrão caso a API falhe sem fornecer um error.message', async () => {
+        // Simulamos um erro vazio, sem a propriedade "message"
+        const erroSemMessage = new Error(); 
+        erroSemMessage.message = undefined; 
+        obterMetricasGeraisApi.mockRejectedValue(erroSemMessage);
+
+        const { result } = renderHook(() => useObterMetricasGerais());
+        await result.current.obterMetricasGerais();
+
+        // Confirma se o Toast usou a string de fallback
+        expect(toast.error).toHaveBeenCalledWith('Não foi possível carregar os dados da Home.');
+    });
 });
