@@ -16,6 +16,15 @@ services:
       - flowpay_mysql_data:/var/lib/mysql
       - ./data/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./data/insert.sql:/docker-entrypoint-initdb.d/02-inserts.sql
+      - ./data/inserts_solicitacao_junho_2026.sql:/docker-entrypoint-initdb.d/03-inserts-junho.sql
+      - ./data/inserts_solicitacao_julho_2026.sql:/docker-entrypoint-initdb.d/04-inserts-julho.sql
+      - ./data/inserts_solicitacao_01082026_ate_17082026.sql:/docker-entrypoint-initdb.d/05-inserts-agosto.sql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build: .
@@ -23,12 +32,14 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${DB_NAME}?useTimezone=true&serverTimezone=America/Sao_Paulo
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - URL_ORIGINS=${URL_ORIGINS}
 
 volumes:
   flowpay_mysql_data:
