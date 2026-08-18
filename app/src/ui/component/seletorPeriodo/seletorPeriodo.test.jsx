@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SeletorPeriodo } from './SeletorPeriodo.component';
+import { SeletorPeriodo } from './seletorPeriodo.component.jsx';
 import userEvent from '@testing-library/user-event';
 
 import { useObterMesesMetricas } from "../../../hooks/index.js";

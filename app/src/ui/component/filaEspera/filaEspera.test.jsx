@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { FilaEspera } from './FilaEspera.component';
+import { FilaEspera } from './filaEspera.component.jsx';
 
 // Mockamos os utilitários de tempo para não dependermos de matemática complexa no teste da tela
 vi.mock('../../../utils/time.js', () => ({

@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { DetalheFila } from './DetalheFila.screen'; // Ajuste o caminho conforme sua estrutura
+import { DetalheFila } from './detalheFila.screen.jsx'; // Ajuste o caminho conforme sua estrutura
 import { useLocation } from 'react-router-dom';
 
 // 1. Mock do React Router

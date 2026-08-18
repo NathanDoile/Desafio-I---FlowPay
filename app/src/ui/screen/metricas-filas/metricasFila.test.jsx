@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MetricasFilas } from './MetricasFilas.screen'; // Ajuste o caminho da sua screen
+import { MetricasFilas } from './metricasFilas.screen.jsx'; // Ajuste o caminho da sua screen
 
 // 1. Mock do Hook da API
 const mockObterMetricasGerais = vi.fn();

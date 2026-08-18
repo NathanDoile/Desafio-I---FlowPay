@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TelaIndisponivel } from './TelaIndisponivel.screen'; // Ajuste o caminho da sua screen
+import { TelaIndisponivel } from './telaIndisponivel.screen.jsx'; // Ajuste o caminho da sua screen
 import { useLocation } from 'react-router-dom';
 
 // 1. Mock do React Router

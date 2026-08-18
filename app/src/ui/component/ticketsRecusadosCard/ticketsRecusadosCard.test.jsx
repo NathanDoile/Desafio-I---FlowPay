@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TicketsRecusadosCard } from './TicketsRecusadosCard.component'; // Ajuste o caminho
+import { TicketsRecusadosCard } from './ticketsRecusadosCard.component.jsx'; // Ajuste o caminho
 
 // Mockamos os utilitários de tempo
 vi.mock('../../../utils/time.js', () => ({

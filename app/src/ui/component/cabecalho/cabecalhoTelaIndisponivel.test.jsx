@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { CabecalhoTelaIndisponivel } from './CabecalhoTelaIndisponivel.component'; // Ajuste o nome do arquivo
+import { CabecalhoTelaIndisponivel } from './cabecalhoTelaIndisponivel.component.jsx'; // Ajuste o nome do arquivo
 
 // 1. Mock do React Router
 const mockNavigate = vi.fn();

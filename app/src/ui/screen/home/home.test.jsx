@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Home } from './Home.screen'; // Ajuste o caminho da sua screen
+import { Home } from './home.screen.jsx'; // Ajuste o caminho da sua screen
 
 // 1. Mock do React Router
 const mockNavigate = vi.fn();

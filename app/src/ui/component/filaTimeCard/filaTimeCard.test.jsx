@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
-import { FilaTimeCard } from './FilaTimeCard.component'; // Ajuste o nome do arquivo
+import { FilaTimeCard } from './filaTimeCard.component.jsx'; // Ajuste o nome do arquivo
 
 describe('Componente FilaTimeCard', () => {
 

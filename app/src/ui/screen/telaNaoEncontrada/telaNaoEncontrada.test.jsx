@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TelaNaoEncontrada } from './TelaNaoEncontrada.screen'; // Ajuste o caminho conforme sua estrutura
+import { TelaNaoEncontrada } from './telaNaoEncontrada.screen.jsx'; // Ajuste o caminho conforme sua estrutura
 
 // Mock do useNavigate do React Router
 const mockNavigate = vi.fn();
