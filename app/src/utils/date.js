@@ -51,7 +51,7 @@ export function converterDataParaSeletor(data){
 
 export function converterSeletorParaData(mesAno){
 
-    const mesAnoArray = mesAno.split();
+    const mesAnoArray = mesAno.split(" ");
 
     let dataFormatada = mesAnoArray[2];
 
