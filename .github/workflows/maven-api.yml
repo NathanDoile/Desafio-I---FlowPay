@@ -91,4 +91,4 @@ jobs:
             --allow-unauthenticated \
             --memory=1024Mi \
             --add-cloudsql-instances flowpay-cloud:southamerica-east1:flowpay-mysql-v2 \
-            --set-env-vars "^~^SPRING_DATASOURCE_URL=jdbc:mysql:///flowpay_db?cloudSqlInstance=flowpay-cloud:southamerica-east1:flowpay-mysql-v2&socketFactory=com.google.cloud.sql.mysql.SocketFactory~SPRING_DATASOURCE_USERNAME=flowpay_user~SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASS }}~SPRING_JPA_HIBERNATE_DDL_AUTO=validate~URL_ORIGINS=${{ secrets.URL_ORIGINS }}"
+            --set-env-vars "^~^SPRING_DATASOURCE_URL=jdbc:mysql:///flowpay_db?unixSocketPath=/cloudsql/flowpay-cloud:southamerica-east1:flowpay-mysql-v2~SPRING_DATASOURCE_USERNAME=flowpay_user~SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASS }}~SPRING_JPA_HIBERNATE_DDL_AUTO=validate~URL_ORIGINS=${{ secrets.URL_ORIGINS }}"
