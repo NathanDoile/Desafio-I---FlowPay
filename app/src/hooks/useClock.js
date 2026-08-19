@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export function useClock(intervalMs = 1000) {
   const anchorRef = useRef(null);
@@ -16,5 +16,13 @@ export function useClock(intervalMs = 1000) {
     return () => clearInterval(id);
   }, [intervalMs]);
 
-  return { anchor, now };
+  // Função para recalibrar a âncora com o tempo atual
+  const resetAnchor = useCallback(() => {
+    const current = Date.now();
+    anchorRef.current = current;
+    setAnchor(current);
+    setNow(current);
+  }, []);
+
+  return { anchor, now, resetAnchor };
 }

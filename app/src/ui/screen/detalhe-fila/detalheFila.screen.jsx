@@ -2,7 +2,7 @@ import {AtendentesEquipe, CabecalhoDetalheFila, FilaEspera, ResumoMetricaCard, T
 import { useClock } from '../../../hooks/useClock.js';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import {useObterDetalheEquipe} from '../../../hooks/index.js';
+import {useObterDetalheEquipe, useSmartPolling} from '../../../hooks/index.js';
 
 export function DetalheFila(){
 
@@ -14,7 +14,7 @@ export function DetalheFila(){
 
     const [equipeSelecionada, setEquipeSelecionada] = useState(equipeDefault ?? "CARTAO");
 
-    const { anchor, now } = useClock(1000);
+    const { anchor, now, resetAnchor } = useClock(1000);
 
     const {obterDetalheEquipe} = useObterDetalheEquipe();
 
@@ -28,12 +28,22 @@ export function DetalheFila(){
         setCarregando(false);
     
         setDadosEquipe(response);
+    }
 
-      }
+    async function reatualizarDadosEquipe(){
+    
+        const response = await obterDetalheEquipe(equipeSelecionada);
+    
+        setDadosEquipe(response);
+
+        resetAnchor();
+    }
     
       useEffect(() => {
         atualizarDadosEquipe();
       }, [equipeSelecionada]);
+
+      useSmartPolling(reatualizarDadosEquipe);
 
     return (
         <div className="min-h-screen bg-[lab(97.6762%_-.553459_-1.78936)] pb-12">

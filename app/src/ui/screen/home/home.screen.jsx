@@ -2,8 +2,7 @@ import {CabecalhoHome, FilaTimeCard, Loading} from '../../component/index.js';
 import { BG_AZUL_ESCURO, TEXTO_CINZA_BG_AZUL, TEXTO_CINZA_BG_BRANCO, TEXTO_PRETO_BG_BRANCO } from '../../../constants/cores.constant.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import {useObterHome} from '../../../hooks/index.js';
-
+import {useObterHome,useSmartPolling} from '../../../hooks/index.js';
 
 export function Home(){
 
@@ -23,7 +22,13 @@ export function Home(){
     setCarregando(false);
 
     setDadosHome(response);
-    console.log(response)
+  }
+
+  async function reatualizarDadosHome(){
+
+    const response = await obterHome();
+
+    setDadosHome(response);
   }
 
   useEffect(() => {
@@ -39,6 +44,8 @@ export function Home(){
     day: "2-digit",
     month: "long",
   });
+
+  useSmartPolling(reatualizarDadosHome);
 
   return (
     <div className="min-h-screen bg-gray-50">
