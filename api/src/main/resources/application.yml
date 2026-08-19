@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/${DB_NAME_LOCAL}?useTimezone=true&serverTimezone=America/Sao_Paulo
+    url: ${SPRING_DATASOURCE_URL}
     username: ${DB_USER_LOCAL}
     password: ${DB_PASSWORD_LOCAL}
     hikari:
