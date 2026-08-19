@@ -90,4 +90,4 @@ jobs:
             --region us-central1 \
             --allow-unauthenticated \
             --add-cloudsql-instances flowpay-cloud:us-central1:flowpay-mysql \
-            --set-env-vars SPRING_DATASOURCE_URL="jdbc:mysql:///flowpay_db?socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=flowpay-cloud:us-central1:flowpay-mysql",SPRING_DATASOURCE_USERNAME="flowpay_user",SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASS }}",SPRING_JPA_HIBERNATE_DDL_AUTO="validate",URL_ORIGINS="${{ secrets.URL_ORIGINS }}"
+            --set-env-vars "^~^SPRING_DATASOURCE_URL=jdbc:mysql:///flowpay_db?socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=flowpay-cloud:us-central1:flowpay-mysql~SPRING_DATASOURCE_USERNAME=flowpay_user~SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASS }}~SPRING_JPA_HIBERNATE_DDL_AUTO=update~URL_ORIGINS=${{ secrets.URL_ORIGINS }}"
