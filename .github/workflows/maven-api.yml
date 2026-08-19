@@ -73,22 +73,22 @@ jobs:
 
       - name: Autenticar Docker no Artifact Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+        run: gcloud auth configure-docker southamerica-east1-docker.pkg.dev --quiet
 
       - name: Construir e Enviar Imagem Docker
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          docker build -t us-central1-docker.pkg.dev/flowpay-cloud/flowpay-repo/flowpay-api:${{ github.sha }} .
-          docker push us-central1-docker.pkg.dev/flowpay-cloud/flowpay-repo/flowpay-api:${{ github.sha }}
+          docker build -t southamerica-east1-docker.pkg.dev/flowpay-cloud/flowpay-repo/flowpay-api:${{ github.sha }} .
+          docker push southamerica-east1-docker.pkg.dev/flowpay-cloud/flowpay-repo/flowpay-api:${{ github.sha }}
 
       - name: Fazer Deploy no Cloud Run
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           gcloud run deploy flowpay-api \
-            --image us-central1-docker.pkg.dev/flowpay-cloud/flowpay-repo/flowpay-api:${{ github.sha }} \
+            --image southamerica-east1-docker.pkg.dev/flowpay-cloud/flowpay-repo/flowpay-api:${{ github.sha }} \
             --platform managed \
-            --region us-central1 \
+            --region southamerica-east1 \
             --allow-unauthenticated \
             --memory=1024Mi \
-            --add-cloudsql-instances flowpay-cloud:us-central1:flowpay-mysql \
-            --set-env-vars "^~^SPRING_DATASOURCE_URL=jdbc:mysql:///flowpay_db?socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=flowpay-cloud:southamerica-east1:flowpay-mysql-v2~SPRING_DATASOURCE_USERNAME=flowpay_user~SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASS }}~SPRING_JPA_HIBERNATE_DDL_AUTO=update~URL_ORIGINS=${{ secrets.URL_ORIGINS }}"
+            --add-cloudsql-instances flowpay-cloud:southamerica-east1:flowpay-mysql-v2 \
+            --set-env-vars "^~^SPRING_DATASOURCE_URL=jdbc:mysql:///flowpay_db?socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=flowpay-cloud:southamerica-east1:flowpay-mysql-v2~SPRING_DATASOURCE_USERNAME=flowpay_user~SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASS }}~SPRING_JPA_HIBERNATE_DDL_AUTO=validate~URL_ORIGINS=${{ secrets.URL_ORIGINS }}"
