@@ -51,3 +51,31 @@ jobs:
             -Dsonar.sources=src
             -Dsonar.exclusions=**/*.test.js,**/*.test.jsx,**/setupTests.js
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+
+  deploy-firebase:
+    needs: analise-sonar
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências e Gerar Build
+        working-directory: ./app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy no Firebase Hosting
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+          PROJECT_PATH: ./app
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_TOKEN }}
