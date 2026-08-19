@@ -23,7 +23,7 @@ export function Home(){
     setCarregando(false);
 
     setDadosHome(response);
-    
+    console.log(response)
   }
 
   useEffect(() => {

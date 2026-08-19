@@ -16,6 +16,7 @@ export function SeletorPeriodo({ value, onChange }){
     const response = await obterMesesMetricas();
   
     setDadosMeses(response);
+    console.log(response)
 
   }
   
@@ -47,7 +48,7 @@ export function SeletorPeriodo({ value, onChange }){
       
       <select
         id="periodo"
-        value={value}
+        value={converterDataParaSeletor(value)}
         onChange={(event) => onChange(converterSeletorParaData(event.target.value))}
         // Fundo transparente no seletor principal, mas azul escuro nas <option> para não quebrar a leitura
         className="bg-transparent text-sm font-medium text-white outline-none cursor-pointer [&>option]:bg-[lab(20.6116_-0.0234246_-27.6176)] [&>option]:text-white"
