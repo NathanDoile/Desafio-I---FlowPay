@@ -6,5 +6,4 @@ SELECT * FROM fila;
 
 SELECT * FROM atendente;
 
-
 SELECT * FROM solicitacao;
