@@ -219,10 +219,6 @@ class BffControllerTest {
 
         }
 
-        long solicitacoesRecusadas = solicitacaoRepository.findAll().stream()
-                .filter(s -> s.getStatusSolicitacao().equals(RECUSADO_POR_FILA_ESPERA_CHEIA))
-                .count();
-
         restTemplate.exchange(
                 "/solicitacao/" + 1 + "/finalizar",
                 PUT,

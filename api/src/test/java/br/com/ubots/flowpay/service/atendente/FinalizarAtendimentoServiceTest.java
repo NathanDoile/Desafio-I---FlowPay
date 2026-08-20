@@ -3,7 +3,6 @@ package br.com.ubots.flowpay.service.atendente;
 import br.com.ubots.flowpay.domain.Atendente;
 import br.com.ubots.flowpay.domain.Equipe;
 import br.com.ubots.flowpay.domain.Solicitacao;
-import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
 import br.com.ubots.flowpay.repository.AtendenteRepository;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import br.com.ubots.flowpay.service.validator.ValidaAtendimentoService;
