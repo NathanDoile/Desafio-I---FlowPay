@@ -187,7 +187,34 @@ class MesesMetricasServiceTest {
             verify(solicitacaoRepository).findById(1L);
 
             assertNotNull(result);
-            assertTrue(result.size() == 1);
+            assertEquals(1, result.size());
+        }
+    }
+
+    @Test
+    @DisplayName("Deve gerar lista quando mesmo mes e ano mas dia diferente")
+    void deveGerarListaQuandoMesmoMesAnoDiaDiferente() {
+
+        LocalDate dataInicial = LocalDate.of(2026, Month.MARCH, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 20);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals(dataInicial, result.get(0));
         }
     }
 }

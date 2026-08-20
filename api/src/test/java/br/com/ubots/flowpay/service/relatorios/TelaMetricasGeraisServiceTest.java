@@ -410,4 +410,68 @@ class TelaMetricasGeraisServiceTest {
         assertNotNull(result);
         assertEquals(0L, result.getMediaTicketsRecusadosPorDia());
     }
+
+    @Test
+    @DisplayName("Deve filtrar solicitacoes quando equipe diferente da equipe alvo")
+    void deveFiltrarSolicitacoesQuandoEquipeDiferente() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Equipe equipe1 = Equipe.builder()
+                .id(1L)
+                .categoria(Categoria.CARTAO.getDescricao())
+                .build();
+
+        Equipe equipe2 = Equipe.builder()
+                .id(2L)
+                .categoria(Categoria.EMPRESTIMO.getDescricao())
+                .build();
+
+        Fila fila1 = Fila.builder()
+                .id(1L)
+                .equipe(equipe1)
+                .build();
+
+        Fila fila2 = Fila.builder()
+                .id(2L)
+                .equipe(equipe2)
+                .build();
+
+        Solicitacao solicitacao1 = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila1)
+                .build();
+
+        Solicitacao solicitacao2 = Solicitacao.builder()
+                .id(2L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(10))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila2)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao1, solicitacao2);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(2L, result.getTotalAtendimentos());
+        assertEquals(2, result.getEquipe().size());
+    }
 }
