@@ -474,4 +474,49 @@ class TelaMetricasGeraisServiceTest {
         assertEquals(2L, result.getTotalAtendimentos());
         assertEquals(2, result.getEquipe().size());
     }
+
+    @Test
+    @DisplayName("Deve extrair equipes quando solicitacao tem fila e equipe")
+    void deveExtrairEquipesQuandoSolicitacaoTemFilaEEquipe() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Equipe equipe = Equipe.builder()
+                .id(1L)
+                .categoria(Categoria.CARTAO.getDescricao())
+                .build();
+
+        Fila fila = Fila.builder()
+                .id(1L)
+                .equipe(equipe)
+                .build();
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(1L, result.getTotalAtendimentos());
+        assertEquals(1, result.getEquipe().size());
+        assertEquals(Categoria.CARTAO.getDescricao(), result.getEquipe().get(0).getNome());
+    }
 }

@@ -217,4 +217,56 @@ class MesesMetricasServiceTest {
             assertEquals(dataInicial, result.get(0));
         }
     }
+
+    @Test
+    @DisplayName("Deve gerar lista quando mesmo mes mas ano diferente")
+    void deveGerarListaQuandoMesmoMesAnoDiferente() {
+
+        LocalDate dataInicial = LocalDate.of(2025, Month.MARCH, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 20);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(13, result.size());
+        }
+    }
+
+    @Test
+    @DisplayName("Deve gerar lista quando mes diferente mas mesmo ano")
+    void deveGerarListaQuandoMesDiferenteMesmoAno() {
+
+        LocalDate dataInicial = LocalDate.of(2026, Month.JANUARY, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 20);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(3, result.size());
+        }
+    }
 }
