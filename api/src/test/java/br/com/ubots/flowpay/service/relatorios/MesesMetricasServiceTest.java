@@ -164,4 +164,30 @@ class MesesMetricasServiceTest {
             assertEquals(4, result.size());
         }
     }
+
+    @Test
+    @DisplayName("Deve retornar lista vazia quando data do proximo ano")
+    void deveRetornarListaVaziaQuandoDataProximoAno() {
+
+        LocalDate dataInicial = LocalDate.of(2027, Month.NOVEMBER, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.FEBRUARY, 15);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertTrue(result.size() == 1);
+        }
+    }
 }

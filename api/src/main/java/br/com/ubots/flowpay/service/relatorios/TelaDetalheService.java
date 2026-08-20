@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.*;
 import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosEntre;
+import static java.util.Optional.ofNullable;
 
 @Service
 @RequiredArgsConstructor
@@ -136,13 +137,12 @@ public class TelaDetalheService {
                                                   LocalDate hoje, java.util.function.Function<Solicitacao, ZonedDateTime> dataExtractor) {
         return solicitacoes.stream()
                 .filter(solicitacao -> statusList.contains(solicitacao.getStatusSolicitacao()))
-                .filter(solicitacao -> {
-                    return Optional.ofNullable(dataExtractor.apply(solicitacao))
-                           .map(d -> d.withZoneSameInstant(zoneId))
-                           .map(ZonedDateTime::toLocalDate)
-                           .map(hoje::equals)
-                           .orElse(false);
-                })
+                .filter(solicitacao -> ofNullable(dataExtractor.apply(solicitacao))
+                        .map(d -> d.withZoneSameInstant(zoneId))
+                        .map(ZonedDateTime::toLocalDate)
+                        .map(hoje::equals)
+                        .orElse(false)
+                )
                 .toList();
     }
 

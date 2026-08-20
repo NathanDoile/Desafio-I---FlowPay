@@ -11,14 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +153,7 @@ class TelaMetricasGeraisServiceTest {
                 .fila(fila)
                 .build();
 
-        List<Solicitacao> solicitacoes = List.of(solicitacao1, solicitacao2);
+        List<Solicitacao> solicitacoes = List.of(solicitacao1, solicitacao2, solicitacao3, solicitacao4, solicitacao5);
 
         when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
                 .thenReturn(solicitacoes);
