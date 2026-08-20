@@ -9,6 +9,7 @@ vi.mock('../../../hooks/index.js', () => ({
     useObterMetricasGerais: () => ({
         obterMetricasGerais: mockObterMetricasGerais,
     }),
+    useSmartPolling: vi.fn(),
 }));
 
 // 2. Mock dos Utilitários

@@ -17,6 +17,7 @@ vi.mock('../../../hooks/index.js', () => ({
     useObterDetalheEquipe: () => ({
         obterDetalheEquipe: mockObterDetalheEquipe,
     }),
+    useSmartPolling: vi.fn(),
 }));
 
 vi.mock('../../../hooks/useClock.js', () => ({

@@ -15,6 +15,7 @@ vi.mock('../../../hooks/index.js', () => ({
     useObterHome: () => ({
         obterHome: mockObterHome,
     }),
+    useSmartPolling: vi.fn(),
 }));
 
 // 3. Mock leve dos componentes filhos
