@@ -97,16 +97,12 @@ describe('Screen DetalheFila', () => {
 
         render(<DetalheFila />);
 
-        // Verifica se o hook useSmartPolling foi registrado na montagem do componente
         expect(mockUseSmartPolling).toHaveBeenCalled();
 
-        // Extrai a função reatualizarDadosEquipe passada como primeiro argumento para o useSmartPolling
         const callbackPolling = mockUseSmartPolling.mock.calls[0][0];
 
-        // Executa a callback manualmente simulando um ciclo do Polling
         await callbackPolling();
 
-        // Confirma que a busca silenciosa foi executada e que a âncora do relógio foi resetada
         expect(mockObterDetalheEquipe).toHaveBeenCalledWith('EMPRESTIMOS');
         expect(mockResetAnchor).toHaveBeenCalled();
     });

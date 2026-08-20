@@ -16,7 +16,6 @@ export function useClock(intervalMs = 1000) {
     return () => clearInterval(id);
   }, [intervalMs]);
 
-  // Função para recalibrar a âncora com o tempo atual
   const resetAnchor = useCallback(() => {
     const current = Date.now();
     anchorRef.current = current;

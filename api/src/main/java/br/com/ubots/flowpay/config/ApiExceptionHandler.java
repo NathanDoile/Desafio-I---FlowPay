@@ -70,8 +70,6 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ResponseEntity<Map<String, Object>> handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException ex,
                                                                                 HttpServletRequest request) {
-        // Você pode colocar um log.warn() aqui para monitorar no Datadog/Grafana
-
         HttpStatus status = CONFLICT;
         String message = "Os dados foram alterados por outro usuário simultaneamente. Recarregue a página ou tente novamente mais tarde.";
 

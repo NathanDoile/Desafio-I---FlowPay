@@ -215,16 +215,13 @@ class BffControllerTest {
                         Void.class
                 );
             } catch (Exception e) {
-                // Ignora erro quando fila estiver cheia (solicitação recusada)
             }
 
         }
 
-        // Verifica se a solicitação recusada foi salva no banco
         long solicitacoesRecusadas = solicitacaoRepository.findAll().stream()
                 .filter(s -> s.getStatusSolicitacao().equals(RECUSADO_POR_FILA_ESPERA_CHEIA))
                 .count();
-        System.out.println("Solicitações recusadas no banco: " + solicitacoesRecusadas);
 
         restTemplate.exchange(
                 "/solicitacao/" + 1 + "/finalizar",

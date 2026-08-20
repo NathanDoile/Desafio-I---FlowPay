@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Graficos } from './graficos.component.jsx';
 
-// Mock do Recharts interceptando o BarChart e exercitando os dois fluxos do Tooltip (Ativo e Inativo)
 vi.mock('recharts', async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -20,7 +19,6 @@ vi.mock('recharts', async (importOriginal) => {
       if (tooltipChild && tooltipChild.props && tooltipChild.props.content) {
         const content = tooltipChild.props.content;
         if (React.isValidElement(content)) {
-          // 1. Instância ATIVA (cobre o render do card)
           activeTooltipRender = React.cloneElement(content, {
             active: true,
             label: 'Empréstimos',
@@ -30,7 +28,6 @@ vi.mock('recharts', async (importOriginal) => {
             ],
           });
 
-          // 2. Instância INATIVA (cobre a linha 45: return null)
           inactiveTooltipRender = React.cloneElement(content, {
             active: false,
             payload: [],

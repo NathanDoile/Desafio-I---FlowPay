@@ -16,7 +16,6 @@ describe('Componente CabecalhoHome', () => {
     });
 
     it('Deve renderizar os dados e gerar as iniciais do gerente corretamente', () => {
-        // Renderizamos com dados fictícios
         render(
             <CabecalhoHome 
                 nomeGerente="Carlos Eduardo Silva" 
@@ -24,11 +23,9 @@ describe('Componente CabecalhoHome', () => {
             />
         );
 
-        // Verifica se printou o nome e a data na tela
         expect(screen.getByText('Carlos Eduardo Silva')).toBeInTheDocument();
         expect(screen.getByText('Segunda-feira, 17 de agosto')).toBeInTheDocument();
 
-        // Verifica se a nossa lógica de extrair iniciais funcionou ("C" de Carlos, "E" de Eduardo)
         expect(screen.getByText('CE')).toBeInTheDocument();
     });
 
@@ -37,13 +34,10 @@ describe('Componente CabecalhoHome', () => {
         
         render(<CabecalhoHome nomeGerente="João Silva" data="Hoje" />);
 
-        // O componente tem apenas um botão, então o robô consegue achar facilmente
         const botaoMetricas = screen.getByRole('button');
         
-        // Clica no botão
         await user.click(botaoMetricas);
 
-        // Verifica se avisou o Router para trocar a URL
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('/metricas');
     });

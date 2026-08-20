@@ -20,13 +20,3 @@ export function CabecalhoTelaIndisponivel(){
             </button>
             
             <div className={`flex items-center gap-2 text-sm font-medium ${TEXTO_CINZA_BG_BRANCO}`}>
-                {/* Bolinha piscando em laranja/vermelho indicando instabilidade */}
-                <span className="relative flex h-2.5 w-2.5">
-                    <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${BG_LARANJA} opacity-75`} />
-                    <span className={`relative inline-flex h-2.5 w-2.5 rounded-full bg-orange-500`} />
-                </span>
-                <span>Sistema instável</span>
-            </div>
-        </header>
-    )
-}

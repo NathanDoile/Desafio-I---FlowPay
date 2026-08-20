@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TelaNaoEncontrada } from './telaNaoEncontrada.screen.jsx'; // Ajuste o caminho conforme sua estrutura
 
-// Mock do useNavigate do React Router
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
@@ -14,7 +13,6 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
-// Mock simples do cabeçalho
 vi.mock('../../component/cabecalho/cabecalhoTelaNaoEncontrada.component', () => ({
     CabecalhoTelaNaoEncontrada: () => <div>Cabeçalho 404</div>,
 }));

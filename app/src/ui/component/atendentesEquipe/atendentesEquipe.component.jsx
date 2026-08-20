@@ -46,68 +46,6 @@ export function AtendentesEquipe({ equipe, anchor, now }){
         </p>
       </div>
 
-      {/* Lista de Atendentes */}
-      <ul className="divide-y divide-gray-200">
-        {equipe?.atendentes?.map((agente) => {
-          // Verifica se ele tem um ticket ativo no momento
-          const emChamada = agente?.solicitacoes?.length > 0;
-
-          return (
-            <li key={agente?.nome} className="flex flex-col gap-3 p-5 hover:bg-gray-50 transition-colors">
-              
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${BG_AZUL_CLARO} font-mono text-sm font-semibold ${TEXTO_AZUL_BG_AZUL_CLARO}`}>
-                    {gerarIniciais(agente?.nome)}
-                  </span>
-                  
-                  <div>
-                    <p className={`text-sm font-medium ${TEXTO_PRETO_BG_BRANCO}`}>{agente?.nome}</p>
-                    <p className={`${TEXTO_CINZA_BG_BRANCO}`}>
-                      {agente?.quantidadeAtendimentosConcluidos} concluídos · média {formatHumanDuration(agente?.tempoMedioAtendimento)}
-                    </p>
-                  </div>
-                </div>
-                
-                {/* A Etiqueta (Badge) */}
                 <BadgeStatus agente={agente} />
               </div>
 
-              {/* Informações Adicionais (Se estiver em chamada, mostra o ticket. Se não, mostra mensagem de espera) */}
-              {emChamada ? 
-                (agente?.solicitacoes?.map((ticket) => {
-                    return (
-                        <div key={ticket?.protocolo} className={`flex items-center justify-between gap-3 rounded-lg ${BG_AZUL_CLARO} px-3 py-2.5`}>
-                            <div className="min-w-0">
-                                <p className={`truncate text-sm font-medium ${TEXTO_PRETO_BG_BRANCO}`}>
-                                {ticket?.assunto}
-                                </p>
-                                <p className={`font-mono text-xs ${TEXTO_CINZA_BG_BRANCO}`}>
-                                Protocolo {ticket?.protocolo}
-                                </p>
-                            </div>
-                            <div className="shrink-0 text-right">
-                                <p className={`text-[11px] uppercase tracking-wide ${TEXTO_CINZA_BG_BRANCO}`}>Em atendimento há</p>
-                                <p className={`font-mono text-base font-semibold tabular-nums ${TEXTO_AZUL_BG_AZUL_CLARO}`}>
-                                {formatDuration(elapsedFromMinsAgo(anchor, now, elapsedSeconds(ticket?.dataHoraEntrouEmAtendimento, now) / 60))}
-                                </p>
-                            </div>
-                        </div>
-                    )
-                }))
-               : (
-                <p className={`rounded-lg ${BG_AZUL_CLARO} px-3 py-2 text-xs ${TEXTO_CINZA_BG_BRANCO}`}>
-                  {agente?.solicitacoes?.length == 0
-                    ? "Aguardando próximo ticket da fila..."
-                    : "Fora de atendimento no momento."}
-                </p>
-              )}
-              
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}

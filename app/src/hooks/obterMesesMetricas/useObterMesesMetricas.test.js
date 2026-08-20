@@ -4,19 +4,16 @@ import { useObterMesesMetricas } from './useObterMesesMetricas.hook'; // Ajuste 
 import { obterMesesMetricasApi } from '../../api';
 import { toast } from 'react-toastify';
 
-// 1. Mock do React Router
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
     useLocation: () => ({ pathname: '/metricas' }), // Simulamos que o usuário está na tela de métricas
 }));
 
-// 2. Mock da API base
 vi.mock('../../api', () => ({
     obterMesesMetricasApi: vi.fn(),
 }));
 
-// 3. Mock do Toast (Avisos na tela)
 vi.mock('react-toastify', () => ({
     toast: {
         error: vi.fn(),
@@ -90,7 +87,6 @@ describe('Hook: useObterMesesMetricas', () => {
     });
 
     it('Deve exibir a mensagem padrão caso a API falhe sem fornecer um error.message', async () => {
-        // Simulamos um erro vazio, sem a propriedade "message"
         const erroSemMessage = new Error(); 
         erroSemMessage.message = undefined; 
         obterMesesMetricasApi.mockRejectedValue(erroSemMessage);
@@ -98,7 +94,6 @@ describe('Hook: useObterMesesMetricas', () => {
         const { result } = renderHook(() => useObterMesesMetricas());
         await result.current.obterMesesMetricas();
 
-        // Confirma se o Toast usou a string de fallback
         expect(toast.error).toHaveBeenCalledWith('Não foi possível carregar os dados da Home.');
     });
 });

@@ -5,7 +5,6 @@ import { useClock } from './useClock';
 describe('Hook: useClock', () => {
 
     beforeEach(() => {
-        // "Congelamos" o relógio do sistema em uma data exata
         const dataFixa = new Date('2026-08-18T10:00:00.000Z');
         vi.useFakeTimers();
         vi.setSystemTime(dataFixa);
@@ -46,7 +45,6 @@ describe('Hook: useClock', () => {
         const { result } = renderHook(() => useClock());
         const tempoInicial = result.current.anchor;
 
-        // Avançamos o tempo em 10 segundos
         act(() => {
             vi.advanceTimersByTime(10000);
         });
@@ -54,12 +52,10 @@ describe('Hook: useClock', () => {
         expect(result.current.anchor).toBe(tempoInicial);
         expect(result.current.now).toBe(tempoInicial + 10000);
 
-        // Disparamos a recalibração da âncora
         act(() => {
             result.current.resetAnchor();
         });
 
-        // Agora tanto o anchor quanto o now devem assumir o tempo atual (tempoInicial + 10000)
         expect(result.current.anchor).toBe(tempoInicial + 10000);
         expect(result.current.now).toBe(tempoInicial + 10000);
     });

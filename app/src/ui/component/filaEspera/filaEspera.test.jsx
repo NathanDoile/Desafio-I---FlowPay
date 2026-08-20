@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FilaEspera } from './filaEspera.component.jsx';
 
-// Mockamos os utilitários de tempo para não dependermos de matemática complexa no teste da tela
 vi.mock('../../../utils/time.js', () => ({
     formatClock: vi.fn(() => '14:30:00'),
     formatDuration: vi.fn((segundos) => `Tempo: ${segundos}`),
@@ -27,11 +26,9 @@ describe('Componente FilaEspera', () => {
 
         render(<FilaEspera equipe={mockEquipeNormal} anchor={100} now={200} />);
 
-        // Verifica se printou o título e a lotação da fila (1/10)
         expect(screen.getByText('1')).toBeInTheDocument();
         expect(screen.getByText('/10')).toBeInTheDocument();
 
-        // Verifica se printou os dados do ticket mockado
         expect(screen.getByText('Dúvida no App')).toBeInTheDocument();
         expect(screen.getByText('Protocolo 1234')).toBeInTheDocument();
         expect(screen.getByText('Entrou às 14:30:00')).toBeInTheDocument(); // Veio do mock de tempo
@@ -41,14 +38,12 @@ describe('Componente FilaEspera', () => {
         const mockEquipeCheia = {
             capacidadeFila: 10,
             fila: [ 
-                // Colocamos 8 tickets para atingir exatamente 80% (o array pode ter objetos vazios pro teste, só importa o tamanho)
                 {}, {}, {}, {}, {}, {}, {}, {} 
             ]
         };
 
         render(<FilaEspera equipe={mockEquipeCheia} anchor={100} now={200} />);
 
-        // O número "8" deve estar na tela. Para verificar a cor, pegamos o elemento pela classe text-red-600
         const textoCapacidade = screen.getByText('8');
         expect(textoCapacidade).toHaveClass('text-red-600');
     });
@@ -58,17 +53,14 @@ describe('Componente FilaEspera', () => {
             capacidadeFila: 10,
             tempoMedioEspera: 300, // A equipe resolve em 5 minutos (300s)
             fila: [
-                // Mas o mock do elapsedFromMinsAgo tá retornando 10 minutos (600s). Ele estourou o tempo!
                 { protocolo: '9999', assunto: 'Estou bravo' } 
             ]
         };
 
         render(<FilaEspera equipe={mockEquipeTicketAtrasado} anchor={100} now={200} />);
 
-        // Nosso mock formatDuration retorna "Tempo: 600"
         const tempoExibido = screen.getByText('Tempo: 600');
         
-        // Verifica se a regra de negócio coloriu o tempo de vermelho
         expect(tempoExibido).toHaveClass('text-red-600');
     });
 
@@ -84,7 +76,6 @@ describe('Componente FilaEspera', () => {
 
         render(<FilaEspera equipe={mockEquipe} anchor={Date.now()} now={Date.now()} />);
 
-        // Ocupação de 1 (10%) não deve ativar a classe de quase cheia
         const spanOcupacao = screen.getByText('1');
         expect(spanOcupacao).not.toHaveClass('text-red-600');
     });
@@ -93,7 +84,6 @@ describe('Componente FilaEspera', () => {
         const mockEquipe = {
             capacidadeFila: 10,
             tempoMedioEspera: 600,
-            // Criamos uma fila com 8 tickets (80% da capacidade)
             fila: Array.from({ length: 8 }).map((_, i) => ({
                 protocolo: `PTK-${i}`,
                 assunto: 'Assunto',
@@ -104,7 +94,6 @@ describe('Componente FilaEspera', () => {
 
         render(<FilaEspera equipe={mockEquipe} anchor={Date.now()} now={Date.now()} />);
 
-        // A ocupação "8" DEVE estar com a classe vermelha
         const spanOcupacao = screen.getByText('8');
         expect(spanOcupacao).toHaveClass('text-red-600');
     });
@@ -118,10 +107,8 @@ describe('Componente FilaEspera', () => {
             tickets: [{}]
         };
 
-        // Passamos null forçando o componente a cair no fallback da Linha 74 e 91
         render(<FilaEspera equipe={mockEquipe} anchor={null} now={null} />);
 
-        // Confirma que renderizou os traços em vez de bugar o cálculo
         expect(screen.getByText('--:--')).toBeInTheDocument();
     });
 
@@ -140,7 +127,6 @@ describe('Componente FilaEspera', () => {
 
         render(<FilaEspera equipe={mockEquipe} anchor={agora} now={agora} />);
 
-        // Buscamos pelo texto com regex flexível que pega o elemento do cronômetro
         const cronometro = screen.getByText(/10:00|20:00|600/i);
         expect(cronometro).toHaveClass('text-red-600');
     });
@@ -154,7 +140,6 @@ describe('Componente FilaEspera', () => {
 
         render(<FilaEspera equipe={mockEquipe} anchor={Date.now()} now={Date.now()} />);
 
-        // Verifica a mensagem de fallback da última linha do arquivo
         expect(screen.getByText('Nenhum ticket em fila. A equipe está com tempo livre!')).toBeInTheDocument();
     });
 
@@ -165,7 +150,6 @@ describe('Componente FilaEspera', () => {
             tickets: [{}]
         };
 
-        // Passamos anchor preenchido, mas now como null para cobrir o outro lado do ||
         render(<FilaEspera equipe={mockEquipe} anchor={1000} now={null} />);
 
         expect(screen.getByText('--:--')).toBeInTheDocument();
@@ -178,14 +162,12 @@ describe('Componente FilaEspera', () => {
             tickets: [{}]
         };
 
-        // Passamos anchor como null e now preenchido para cobrir o primeiro lado do ||
         render(<FilaEspera equipe={mockEquipe} anchor={null} now={1000} />);
 
         expect(screen.getByText('--:--')).toBeInTheDocument();
     });
 
     it('Deve exibir "--:--:--" caso formatClock retorne null ou undefined para a hora de entrada', async () => {
-        // Importamos a função mockada e forçamos ela a retornar null só neste teste
         const { formatClock } = vi.mocked(await import('../../../utils/time.js'));
         formatClock.mockReturnValueOnce(null);
 
@@ -197,7 +179,6 @@ describe('Componente FilaEspera', () => {
 
         render(<FilaEspera equipe={mockEquipe} anchor={1000} now={2000} />);
 
-        // Valida o fallback do operador ??
         expect(screen.getByText('Entrou às --:--:--')).toBeInTheDocument();
     });
 });

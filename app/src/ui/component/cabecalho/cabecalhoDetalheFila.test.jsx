@@ -15,7 +15,6 @@ describe('Componente: CabecalhoDetalheFila', () => {
     };
 
     it('Deve renderizar os dados principais e formatar o horário corretamente', () => {
-        // Data local cravada às 10:30:00 para evitar conflitos de fuso horário
         const horarioFixo = new Date(2026, 7, 18, 10, 30, 0).getTime();
 
         render(
@@ -55,11 +54,9 @@ describe('Componente: CabecalhoDetalheFila', () => {
             />
         );
 
-        // O botão "Cartões" (ID: CARTAO) DEVE ter aria-current="page"
         const botaoCartoes = screen.getByRole('button', { name: /cartões/i });
         expect(botaoCartoes).toHaveAttribute('aria-current', 'page');
 
-        // Os botões inativos NÃO DEVEM ter aria-current
         const botaoEmprestimos = screen.getByRole('button', { name: /empréstimos/i });
         expect(botaoEmprestimos).not.toHaveAttribute('aria-current');
     });

@@ -6,7 +6,6 @@ describe('Componente: Loading', () => {
   it('Deve renderizar a mensagem de carregamento e o ícone de spinner', () => {
     render(<Loading />);
 
-    // Verifica o texto de carregamento
     expect(screen.getByText('Carregando...')).toBeInTheDocument();
   });
 });

@@ -60,29 +60,3 @@ export function MetricasGeraisCard({empresa}){
                   {kpi.label}
                 </p>
                 
-                {/* Lógica de cores: Se for "accent" fica Laranja, senão fica Azul LAB */}
-                <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-sm ${
-                    kpi.accent
-                      ? `${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA}`
-                      : `${BG_AZUL_ESCURO} text-white`
-                  }`}
-                >
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </span>
-              </div>
-              
-              <div>
-                <p className={`text-3xl font-semibold tracking-tight ${TEXTO_PRETO_BG_BRANCO}`}>
-                  {kpi.value}
-                </p>
-                <p className={`mt-1 text-xs ${TEXTO_CINZA_BG_BRANCO}`}>{kpi.hint}</p>
-              </div>
-            </div>
-          );
-        })}
-        
-      </div>
-    </section>
-  );
-}

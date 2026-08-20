@@ -10,7 +10,6 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_ATENDIMENTO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.FINALIZADO;
 import static br.com.ubots.flowpay.helper.DateTimeNow.now;
 
@@ -36,7 +35,9 @@ public class FinalizarAtendimentoService {
 
         validaAtendimentoService.porIdEmAtendimento(id);
 
-        Solicitacao solicitacao = solicitacaoRepository.findByIdAndStatusSolicitacao(id, EM_ATENDIMENTO);
+        Solicitacao solicitacao = solicitacaoRepository.findById(id).get();
+
+        validaAtendimentoService.porStatusEmAtendimentoOuFinalizado(solicitacao);
 
         Atendente atendente = solicitacao.getAtendente();
 

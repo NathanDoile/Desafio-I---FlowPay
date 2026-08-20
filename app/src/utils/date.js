@@ -7,7 +7,6 @@ export function converterDataParaSeletor(data) {
   if (!data) return "";
   
   const [ano, mes] = data.split("-");
-  // 🔄 Mudança aqui: de parseInt para Number.parseInt
   const indiceMes = Number.parseInt(mes, 10) - 1;
   const nomeMes = MESES[indiceMes] || "";
 

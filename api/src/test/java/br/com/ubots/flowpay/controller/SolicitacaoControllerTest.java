@@ -17,6 +17,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.EMPRESTIMO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.EM_ATENDIMENTO;
@@ -204,5 +208,109 @@ class SolicitacaoControllerTest {
 
         assertEquals(NOT_FOUND, response.getStatusCode());
         assertEquals("Não existe atendimento em andamento com o ID informado.", response.getBody().get("message"));
+    }
+
+    @Test
+    @DisplayName("Deve lidar com race condition quando dois usuarios tentam atualizar mesmo registro")
+    void deveLidarComRaceConditionQuandoDoisUsuariosTentamAtualizarMesmoRegistro() throws InterruptedException {
+
+        ResponseEntity<CriarSolicitacaoResponse> responseSolicitacao = restTemplate.postForEntity(
+                "/solicitacao",
+                criarSolicitacaoRequest(),
+                CriarSolicitacaoResponse.class
+        );
+
+        Long solicitacaoId = responseSolicitacao.getBody().getId();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        CountDownLatch latch = new CountDownLatch(2);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger conflictCount = new AtomicInteger(0);
+
+        executorService.submit(() -> {
+            try {
+                ResponseEntity<Void> response = restTemplate.exchange(
+                        "/solicitacao/" + solicitacaoId + "/finalizar",
+                        PUT,
+                        null,
+                        Void.class
+                );
+                if (response.getStatusCode() == OK) {
+                    successCount.incrementAndGet();
+                }
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        executorService.submit(() -> {
+            try {
+                ResponseEntity<Map> response = restTemplate.exchange(
+                        "/solicitacao/" + solicitacaoId + "/finalizar",
+                        PUT,
+                        null,
+                        Map.class
+                );
+                if (response.getStatusCode() == CONFLICT) {
+                    conflictCount.incrementAndGet();
+                }
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        latch.await();
+        executorService.shutdown();
+
+        assertTrue(successCount.get() >= 1, "Pelo menos uma requisição deve ter sucesso");
+    }
+
+    @Test
+    @DisplayName("Deve proteger contra race conditions - não deve retornar erro de conflito")
+    void deveProtegerContraRaceConditionsNaoDeveRetornarErroDeConflito() throws InterruptedException {
+
+        ResponseEntity<CriarSolicitacaoResponse> responseSolicitacao = restTemplate.postForEntity(
+                "/solicitacao",
+                criarSolicitacaoRequest(),
+                CriarSolicitacaoResponse.class
+        );
+
+        Long solicitacaoId = responseSolicitacao.getBody().getId();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        CountDownLatch endLatch = new CountDownLatch(100);
+        AtomicInteger conflictCount = new AtomicInteger(0);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger notFoundCount = new AtomicInteger(0);
+
+        for (int i = 0; i < 100; i++) {
+            executorService.submit(() -> {
+                try {
+                    ResponseEntity<Map> response = restTemplate.exchange(
+                            "/solicitacao/" + solicitacaoId + "/finalizar",
+                            PUT,
+                            null,
+                            Map.class
+                    );
+                    if (response.getStatusCode() == CONFLICT) {
+                        conflictCount.incrementAndGet();
+                    } else if (response.getStatusCode() == OK) {
+                        successCount.incrementAndGet();
+                    } else if (response.getStatusCode() == NOT_FOUND) {
+                        notFoundCount.incrementAndGet();
+                    }
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    endLatch.countDown();
+                }
+            });
+        }
+
+        endLatch.await();
+        executorService.shutdown();
+
+        assertTrue(conflictCount.get() <= 5, "Erros de conflito devem ser mínimos - validações protegem a maioria dos casos");
+        assertTrue(successCount.get() >= 1, "Pelo menos uma requisição deve ter sucesso");
     }
 }

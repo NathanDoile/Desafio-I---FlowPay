@@ -5,7 +5,6 @@ import { FilaTimeCard } from './filaTimeCard.component.jsx'; // Ajuste o nome do
 
 describe('Componente FilaTimeCard', () => {
 
-    // Criamos um mock padrão para não ter que repetir código em todo teste
     const mockEquipePadrao = {
         nome: 'CARTAO',
         quantidadeTicketsEmFila: 5,
@@ -16,12 +15,10 @@ describe('Componente FilaTimeCard', () => {
     it('Deve renderizar os dados corretamente e calcular os minutos arredondados', () => {
         render(<FilaTimeCard equipe={mockEquipePadrao} onClick={vi.fn()} />);
 
-        // Verifica os textos puros
         expect(screen.getByText('CARTAO')).toBeInTheDocument();
         expect(screen.getByText('5')).toBeInTheDocument(); // Tickets
         expect(screen.getByText('3')).toBeInTheDocument(); // Atendentes
 
-        // Verifica a matemática: 150 segundos devem virar "2 min" (arredondado para baixo com Math.floor)
         expect(screen.getByText('2 min')).toBeInTheDocument();
     });
 
@@ -33,7 +30,6 @@ describe('Componente FilaTimeCard', () => {
     });
 
     it('Deve mostrar status "Vazia" quando a fila tiver 0 tickets', () => {
-        // Clonamos o mock padrão e forçamos a fila a ter 0 tickets
         const equipeVazia = { ...mockEquipePadrao, quantidadeTicketsEmFila: 0 };
         
         render(<FilaTimeCard equipe={equipeVazia} onClick={vi.fn()} />);
@@ -50,12 +46,10 @@ describe('Componente FilaTimeCard', () => {
             <FilaTimeCard equipe={mockEquipePadrao} onClick={mockOnClick} />
         );
 
-        // Truque para achar o SVG já que ele não é um botão: buscamos pela classe da biblioteca Lucide
         const iconeSeta = container.querySelector('.lucide-arrow-up-right');
         
         await user.click(iconeSeta);
 
-        // Verifica se avisou a tela pai que a equipe CARTAO foi clicada
         expect(mockOnClick).toHaveBeenCalledTimes(1);
         expect(mockOnClick).toHaveBeenCalledWith('CARTAO');
     });
@@ -70,13 +64,11 @@ describe('Componente FilaTimeCard', () => {
 
         render(<FilaTimeCard equipe={mockEquipe} onClick={vi.fn()} />);
 
-        // Verifica o nome da equipe e os KPIs
         expect(screen.getByText('CARTAO')).toBeInTheDocument();
         expect(screen.getByText('5')).toBeInTheDocument(); // Tickets na fila
         expect(screen.getByText('3')).toBeInTheDocument(); // Agentes online
         expect(screen.getByText('2 min')).toBeInTheDocument(); // Espera convertida
         
-        // Verifica se a condicional do badge caiu em "Aguardando"
         expect(screen.getByText('Aguardando')).toBeInTheDocument();
     });
 
@@ -91,7 +83,6 @@ describe('Componente FilaTimeCard', () => {
         render(<FilaTimeCard equipe={mockEquipe} onClick={vi.fn()} />);
 
         expect(screen.getByText('EMPRESTIMOS')).toBeInTheDocument();
-        // Verifica se a condicional do badge caiu em "Vazia"
         expect(screen.getByText('Vazia')).toBeInTheDocument();
     });
 
@@ -118,17 +109,12 @@ describe('Componente FilaTimeCard', () => {
             mediaTempoEsperaEmSegundos: 0
         };
 
-        // Renderiza passando a função espiã no onClick
         const { container } = render(<FilaTimeCard equipe={mockEquipe} onClick={mockOnClick} />);
 
-        // O seu ícone do ArrowUpRight não tem role de botão, mas podemos buscá-lo pelo SVG ou classe
-        // Uma forma segura de clicar nele no teste é buscar a tag com 'lucide-arrow-up-right'
-        // Como o lucide renderiza a classe no SVG, buscamos o elemento que tem o cursor-pointer
         const iconeSeta = container.querySelector('.cursor-pointer'); 
         
         await user.click(iconeSeta);
 
-        // Confirma se o click disparou a callback com a string "CARTAO"
         expect(mockOnClick).toHaveBeenCalledTimes(1);
         expect(mockOnClick).toHaveBeenCalledWith('CARTAO');
     });

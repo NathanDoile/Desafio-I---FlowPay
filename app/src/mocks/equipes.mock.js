@@ -1,4 +1,3 @@
-// Exportamos a lista simplificada para os botões do cabeçalho
 export const listaEquipesMock = [
   { id: "CARTAO", nome: "Cartões" },
   { id: "EMPRESTIMOS", nome: "Empréstimos" },

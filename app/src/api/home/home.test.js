@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { obterHomeApi } from './home.api'; // Ajuste o nome do arquivo importado
 import { axiosInstance } from '../base/axiosInstance';
 
-// 1. Mock do Axios
 vi.mock('../base/axiosInstance', () => ({
     axiosInstance: {
         get: vi.fn(),
@@ -21,7 +20,6 @@ describe('API: obterHomeApi', () => {
 
         const resultado = await obterHomeApi();
 
-        // Verifica a URL sem parâmetros
         expect(axiosInstance.get).toHaveBeenCalledWith('/relatorios/home');
         expect(axiosInstance.get).toHaveBeenCalledTimes(1);
         
@@ -46,7 +44,6 @@ describe('API: obterHomeApi', () => {
         const erroSemResposta = { message: 'Network Error' }; // Erro sem a chave "response"
         axiosInstance.get.mockRejectedValue(erroSemResposta);
 
-        // O seu código tem a checagem "!error.response", então ele repassa direto
         await expect(obterHomeApi()).rejects.toEqual(erroSemResposta);
     });
 

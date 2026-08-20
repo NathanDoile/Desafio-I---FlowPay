@@ -4,19 +4,16 @@ import { useObterHome } from './useHome.hook'; // Ajuste o caminho
 import { obterHomeApi } from '../../api';
 import { toast } from 'react-toastify';
 
-// 1. Mock do React Router
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
     useLocation: () => ({ pathname: '/' }), // Simulamos que o usuário está na Home
 }));
 
-// 2. Mock da API base
 vi.mock('../../api', () => ({
     obterHomeApi: vi.fn(),
 }));
 
-// 3. Mock do Toast (Avisos na tela)
 vi.mock('react-toastify', () => ({
     toast: {
         error: vi.fn(),
@@ -90,7 +87,6 @@ describe('Hook: useObterHome', () => {
     });
 
     it('Deve exibir a mensagem padrão caso a API falhe sem fornecer um error.message', async () => {
-        // Simulamos um erro vazio, sem a propriedade "message"
         const erroSemMessage = new Error(); 
         erroSemMessage.message = undefined; 
         obterHomeApi.mockRejectedValue(erroSemMessage);
@@ -98,7 +94,6 @@ describe('Hook: useObterHome', () => {
         const { result } = renderHook(() => useObterHome());
         await result.current.obterHome();
 
-        // Confirma se o Toast usou a string de fallback
         expect(toast.error).toHaveBeenCalledWith('Não foi possível carregar os dados da Home.');
     });
 });

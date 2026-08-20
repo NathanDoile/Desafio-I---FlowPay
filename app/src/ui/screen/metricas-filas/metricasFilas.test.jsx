@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MetricasFilas } from './metricasFilas.screen.jsx';
 
-// 1. Mock do Hook da API e do Smart Polling
 const mockObterMetricasGerais = vi.fn();
 const mockUseSmartPolling = vi.fn();
 
@@ -14,12 +13,10 @@ vi.mock('../../../hooks/index.js', () => ({
     useSmartPolling: (callback, interval) => mockUseSmartPolling(callback, interval),
 }));
 
-// 2. Mock dos Utilitários
 vi.mock('../../../utils/date.js', () => ({
     converterDataParaSeletor: vi.fn((data) => `Mês Formatado (${data})`),
 }));
 
-// 3. Mock leve dos componentes filhos
 vi.mock('../../component/index.js', () => ({
     Loading: () => <div data-testid="loading-spinner">Carregando...</div>,
     CabecalhoMetricas: ({ periodoSelecionado, setPeriodoSelecionado }) => (
@@ -49,21 +46,16 @@ describe('Screen MetricasFilas', () => {
     it('Deve carregar e renderizar os dados de métricas com a data atual por padrão', async () => {
         render(<MetricasFilas />);
 
-        // Exibe spinner de loading na montagem
         expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
 
-        // Aguarda a resolução da API
         await waitFor(() => {
             expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
         });
 
-        // Confirma que a API foi chamada
         expect(mockObterMetricasGerais).toHaveBeenCalledTimes(1);
 
-        // Confirma renderização do mês formatado via converterDataParaSeletor
         expect(screen.getByText(/Mês Formatado/i)).toBeInTheDocument();
 
-        // Confirma que os componentes de métricas foram renderizados
         expect(screen.getByText('Metricas Gerais Card')).toBeInTheDocument();
         expect(screen.getByText('Gráficos de Métricas')).toBeInTheDocument();
         expect(screen.getByText('Tabela de Métricas')).toBeInTheDocument();
@@ -77,11 +69,9 @@ describe('Screen MetricasFilas', () => {
             expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
         });
 
-        // Simula a mudança de período no cabeçalho
         const botaoTrocarPeriodo = screen.getByRole('button', { name: /trocar período/i });
         await user.click(botaoTrocarPeriodo);
 
-        // Verifica se a API buscou novamente os dados com o novo período ('2026-09-01')
         expect(mockObterMetricasGerais).toHaveBeenCalledWith('2026-09-01');
     });
 
@@ -92,23 +82,18 @@ describe('Screen MetricasFilas', () => {
             expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
         });
 
-        // Confirma se o Smart Polling foi registrado na inicialização
         expect(mockUseSmartPolling).toHaveBeenCalled();
 
-        // Extrai a função reatualizarDadosMetricas repassada para o useSmartPolling
         const callbackPolling = mockUseSmartPolling.mock.calls[0][0];
 
-        // Prepara novos dados retornados no ciclo do Polling
         const mockDadosAtualizados = {
             totalTickets: 200,
             equipe: [{ id: '1', nome: 'Cartão' }],
         };
         mockObterMetricasGerais.mockResolvedValueOnce(mockDadosAtualizados);
 
-        // Dispara a callback do polling
         await callbackPolling();
 
-        // Confirma que a API foi consultada para reatualizar silenciosamente
         expect(mockObterMetricasGerais).toHaveBeenCalled();
     });
 });

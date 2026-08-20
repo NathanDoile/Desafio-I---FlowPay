@@ -15,12 +15,10 @@ describe('Componente: MetricCard', () => {
       />
     );
 
-    // Valida ícone, título e valor
     expect(screen.getByTestId('mock-icon')).toBeInTheDocument();
     expect(screen.getByText('Total de Tickets')).toBeInTheDocument();
     expect(screen.getByText('150')).toBeInTheDocument();
 
-    // Valida descrição opcional
     expect(
       screen.getByText('Aumento de 10% em relação ao mês anterior')
     ).toBeInTheDocument();
@@ -38,7 +36,6 @@ describe('Componente: MetricCard', () => {
     expect(screen.getByText('Agentes Online')).toBeInTheDocument();
     expect(screen.getByText('8')).toBeInTheDocument();
     
-    // Confirma que não há parágrafo extra de descrição
     expect(screen.queryByText('Aumento de 10% em relação ao mês anterior')).not.toBeInTheDocument();
   });
 });

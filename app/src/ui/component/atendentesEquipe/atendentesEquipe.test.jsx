@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { AtendentesEquipe } from './atendentesEquipe.component.jsx';
 
-// Mock das utilidades de tempo para valores previsíveis
 vi.mock('../../../utils/time.js', () => ({
   formatHumanDuration: vi.fn((tempo) => `${tempo}m`),
   formatDuration: vi.fn(() => '05:00'),
@@ -28,15 +27,12 @@ describe('Componente: AtendentesEquipe', () => {
 
     render(<AtendentesEquipe equipe={mockEquipe} anchor={mockAnchor} now={mockNow} />);
 
-    // Título e contador
     expect(screen.getByRole('heading', { name: /atendentes/i })).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
 
-    // Nome e estatísticas
     expect(screen.getByText('Carlos Eduardo Silva')).toBeInTheDocument();
     expect(screen.getByText(/12 concluídos · média 5m/i)).toBeInTheDocument();
 
-    // Iniciais geradas (pega as duas primeiras palavras: "Carlos Eduardo" -> "CE")
     expect(screen.getByText('CE')).toBeInTheDocument();
   });
 
@@ -54,10 +50,8 @@ describe('Componente: AtendentesEquipe', () => {
 
     render(<AtendentesEquipe equipe={mockEquipe} anchor={mockAnchor} now={mockNow} />);
 
-    // Badge de status
     expect(screen.getByText('Disponível')).toBeInTheDocument();
     
-    // Mensagem de espera quando solicitações estritamente igual a array vazio (length == 0)
     expect(screen.getByText('Aguardando próximo ticket da fila...')).toBeInTheDocument();
   });
 
@@ -81,14 +75,11 @@ describe('Componente: AtendentesEquipe', () => {
 
     render(<AtendentesEquipe equipe={mockEquipe} anchor={mockAnchor} now={mockNow} />);
 
-    // Badge de atendimento
     expect(screen.getByText('Em atendimento')).toBeInTheDocument();
 
-    // Detalhes do Ticket
     expect(screen.getByText('Dúvida sobre limite do cartão')).toBeInTheDocument();
     expect(screen.getByText('Protocolo TK-12345')).toBeInTheDocument();
 
-    // Tempo de atendimento formatado via mock (05:00)
     expect(screen.getByText('Em atendimento há')).toBeInTheDocument();
     expect(screen.getByText('05:00')).toBeInTheDocument();
   });

@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { obterMesesMetricasApi } from './mesesMetricas.api'; // Ajuste o caminho se necessário
 import { axiosInstance } from '../base/axiosInstance';
 
-// 1. Mock do Axios
 vi.mock('../base/axiosInstance', () => ({
     axiosInstance: {
         get: vi.fn(),
@@ -21,7 +20,6 @@ describe('API: obterMesesMetricasApi', () => {
 
         const resultado = await obterMesesMetricasApi();
 
-        // Verifica a URL chamada
         expect(axiosInstance.get).toHaveBeenCalledWith('/relatorios/meses-metricas');
         expect(axiosInstance.get).toHaveBeenCalledTimes(1);
         
@@ -67,7 +65,6 @@ describe('API: obterMesesMetricasApi', () => {
         };
         axiosInstance.get.mockRejectedValue(erroSemMensagem);
 
-        // Mesmo sendo outra API, a sua mensagem de fallback (por enquanto) é a mesma
         await expect(obterMesesMetricasApi()).rejects.toThrowError('Ocorreu um erro ao obter os dados da tela Home.');
     });
 

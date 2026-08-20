@@ -3,14 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CabecalhoMetricas } from './cabecalhoMetricas.component.jsx'; // Ajuste o caminho
 
-// 1. Mock do React Router
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
 }));
 
-// 2. Mock do Componente Filho (SeletorPeriodo)
-// Nós criamos um HTML bobo só para garantir que as props estão chegando nele
 vi.mock('../seletorPeriodo/seletorPeriodo.component', () => ({
     SeletorPeriodo: ({ value, onChange }) => (
         <div data-testid="mock-seletor-periodo">
@@ -39,10 +36,8 @@ describe('Componente CabecalhoMetricas', () => {
             />
         );
 
-        // Verifica se printou o título do cabeçalho
         expect(screen.getByText('Métricas de Filas de Distribuição')).toBeInTheDocument();
 
-        // Verifica se o nosso SeletorPeriodo (falso) foi renderizado recebendo o valor correto
         expect(screen.getByTestId('mock-seletor-periodo')).toBeInTheDocument();
         expect(screen.getByTestId('valor-recebido')).toHaveTextContent('2026-08-01');
     });
@@ -57,8 +52,6 @@ describe('Componente CabecalhoMetricas', () => {
             />
         );
 
-        // Busca o botão de voltar (como o mock do seletor também tem um botão agora, 
-        // a gente pega todos e clica no primeiro, que é o LayoutDashboard)
         const botoes = screen.getAllByRole('button');
         await user.click(botoes[0]);
 
@@ -77,11 +70,9 @@ describe('Componente CabecalhoMetricas', () => {
             />
         );
 
-        // Clica no botão de teste do nosso componente filho "falso"
         const botaoMudarPeriodo = screen.getByTestId('botao-mudar-periodo');
         await user.click(botaoMudarPeriodo);
 
-        // Verifica se o componente pai ouviu a mudança do filho perfeitamente
         expect(mockSetPeriodo).toHaveBeenCalledTimes(1);
         expect(mockSetPeriodo).toHaveBeenCalledWith('2026-09-01');
     });

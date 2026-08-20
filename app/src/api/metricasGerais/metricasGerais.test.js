@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { obterMetricasGeraisApi } from './metricasGerais.api'; // Ajuste o nome do arquivo
 import { axiosInstance } from '../base/axiosInstance';
 
-// 1. Mock do Axios
 vi.mock('../base/axiosInstance', () => ({
     axiosInstance: {
         get: vi.fn(),
@@ -19,10 +18,8 @@ describe('API: obterMetricasGeraisApi', () => {
         const mockDadosAPI = { totalAtendimentos: 1500, tempoMedio: 120 };
         axiosInstance.get.mockResolvedValue({ data: mockDadosAPI });
 
-        // Passamos uma data de teste para a função
         const resultado = await obterMetricasGeraisApi('2026-08');
 
-        // Verifica se a URL foi montada corretamente com o ?data=2026-08
         expect(axiosInstance.get).toHaveBeenCalledWith('/relatorios/metricas-gerais?data=2026-08');
         expect(axiosInstance.get).toHaveBeenCalledTimes(1);
         

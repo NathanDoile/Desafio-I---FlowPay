@@ -21,7 +21,6 @@ export function MetricasFilas() {
         setCarregando(false);
     
         setDadosMetricas(response);
-        console.log(response)
       }
 
     async function reatualizarDadosMetricas(){

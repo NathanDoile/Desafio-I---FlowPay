@@ -4,19 +4,16 @@ import { useObterMetricasGerais } from './useObterMetricasGerais.hook'; // Ajust
 import { obterMetricasGeraisApi } from '../../api';
 import { toast } from 'react-toastify';
 
-// 1. Mock do React Router
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
     useLocation: () => ({ pathname: '/metricas' }), // Simulamos que o usuário está na tela de métricas
 }));
 
-// 2. Mock da API base
 vi.mock('../../api', () => ({
     obterMetricasGeraisApi: vi.fn(),
 }));
 
-// 3. Mock do Toast (Avisos na tela)
 vi.mock('react-toastify', () => ({
     toast: {
         error: vi.fn(),
@@ -36,10 +33,8 @@ describe('Hook: useObterMetricasGerais', () => {
 
         const { result } = renderHook(() => useObterMetricasGerais());
         
-        // Passamos o parâmetro de data aqui
         const resposta = await result.current.obterMetricasGerais(dataTeste);
 
-        // Verifica se o hook repassou a data corretamente para a API
         expect(obterMetricasGeraisApi).toHaveBeenCalledWith(dataTeste);
         expect(resposta).toEqual(mockDados);
         expect(mockNavigate).not.toHaveBeenCalled();
@@ -95,7 +90,6 @@ describe('Hook: useObterMetricasGerais', () => {
     });
 
     it('Deve exibir a mensagem padrão caso a API falhe sem fornecer um error.message', async () => {
-        // Simulamos um erro vazio, sem a propriedade "message"
         const erroSemMessage = new Error(); 
         erroSemMessage.message = undefined; 
         obterMetricasGeraisApi.mockRejectedValue(erroSemMessage);
@@ -103,7 +97,6 @@ describe('Hook: useObterMetricasGerais', () => {
         const { result } = renderHook(() => useObterMetricasGerais());
         await result.current.obterMetricasGerais();
 
-        // Confirma se o Toast usou a string de fallback
         expect(toast.error).toHaveBeenCalledWith('Não foi possível carregar os dados da Home.');
     });
 });

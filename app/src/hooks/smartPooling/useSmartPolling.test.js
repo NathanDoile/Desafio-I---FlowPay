@@ -18,11 +18,9 @@ describe('Hook: useSmartPolling', () => {
 
     renderHook(() => useSmartPolling(callbackMock, 5000));
 
-    // Avança o tempo em 5 segundos (1º disparo)
     vi.advanceTimersByTime(5000);
     expect(callbackMock).toHaveBeenCalledTimes(1);
 
-    // Avança mais 5 segundos (2º disparo)
     vi.advanceTimersByTime(5000);
     expect(callbackMock).toHaveBeenCalledTimes(2);
   });
@@ -43,7 +41,6 @@ describe('Hook: useSmartPolling', () => {
 
     renderHook(() => useSmartPolling(callbackMock, 10000));
 
-    // Troca para visível e dispara o evento da API do DOM
     Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: true });
     document.dispatchEvent(new Event('visibilitychange'));
 
@@ -61,7 +58,6 @@ describe('Hook: useSmartPolling', () => {
       { initialProps: { cb: callbackOriginal } }
     );
 
-    // Atualiza a prop de callback no re-render
     rerender({ cb: callbackNovo });
 
     vi.advanceTimersByTime(5000);

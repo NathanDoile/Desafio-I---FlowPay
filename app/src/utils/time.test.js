@@ -29,7 +29,6 @@ describe('Utilitários de Tempo e Duração', () => {
         });
 
         it('Não deve exibir tempo negativo (Math.max de proteção)', () => {
-            // Se vier -10 da API, ele deve cravar em zero
             expect(formatDuration(-10)).toBe('00:00');
         });
     });
@@ -48,12 +47,10 @@ describe('Utilitários de Tempo e Duração', () => {
         it('Deve exibir apenas "h e min" e descartar os segundos se ultrapassar 1 hora', () => {
             expect(formatHumanDuration(3600)).toBe('1 h 00 min');
             expect(formatHumanDuration(3665)).toBe('1 h 01 min'); 
-            // Os 5 segundos são ocultados intencionalmente pela sua regra de negócio
         });
     });
 
     describe('Funções: formatClock e formatClockMs', () => {
-        // Criamos uma data local fixa para evitar conflitos de fuso horário em servidores (CI/CD)
         const dataFixa = new Date(2026, 7, 18, 14, 5, 9); // 18/08/2026 às 14:05:09 local
 
         it('formatClock: Deve retornar o horário no formato HH:MM:SS a partir de uma data ISO', () => {
@@ -69,7 +66,6 @@ describe('Utilitários de Tempo e Duração', () => {
 
     describe('Cálculos de Decurso de Tempo (Elapsed)', () => {
         it('elapsedSeconds: Deve calcular a diferença exata em segundos', () => {
-            // "isoDate" foi há 10 segundos atrás do nosso "now"
             const iso = new Date('2026-08-18T10:00:00.000Z');
             const now = new Date('2026-08-18T10:00:10.000Z').getTime();
             
@@ -81,7 +77,6 @@ describe('Utilitários de Tempo e Duração', () => {
             const now = 6000; // Passaram 5 segundos da âncora
             const minsAgo = 2; // Offset inicial de 2 minutos (120 segundos)
             
-            // Esperado: 120s (minsAgo) + 5s (diferença) = 125s
             expect(elapsedFromMinsAgo(anchorMs, now, minsAgo)).toBe(125);
         });
 
@@ -90,7 +85,6 @@ describe('Utilitários de Tempo e Duração', () => {
             const now = 5000; // Passaram 4 segundos
             const secsAgo = 30; // Offset inicial de 30 segundos
             
-            // Esperado: 30s + 4s = 34s
             expect(elapsedFromSecsAgo(anchorMs, now, secsAgo)).toBe(34);
         });
     });
