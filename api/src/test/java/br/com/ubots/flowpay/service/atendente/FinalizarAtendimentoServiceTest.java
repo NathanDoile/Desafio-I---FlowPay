@@ -67,12 +67,13 @@ class FinalizarAtendimentoServiceTest {
         solicitacao.setAtendente(atendente);
         atendente.setEquipe(equipe);
 
-        when(solicitacaoRepository.findByIdAndStatusSolicitacao(id, EM_ATENDIMENTO)).thenReturn(solicitacao);
+        when(solicitacaoRepository.findById(id)).thenReturn(java.util.Optional.of(solicitacao));
 
         tested.finalizar(id);
 
         verify(validaAtendimentoService).porIdEmAtendimento(id);
-        verify(solicitacaoRepository).findByIdAndStatusSolicitacao(id, EM_ATENDIMENTO);
+        verify(solicitacaoRepository).findById(id);
+        verify(validaAtendimentoService).porStatusEmAtendimentoOuFinalizado(solicitacao);
         verify(solicitacaoRepository).save(solicitacaoCaptor.capture());
         verify(atendenteRepository).save(atendenteCaptor.capture());
         verify(encaminharDaFilaParaAtendente).encaminharParaAtendente(equipe);
@@ -96,7 +97,8 @@ class FinalizarAtendimentoServiceTest {
         assertThrows(ResponseStatusException.class, () -> tested.finalizar(id));
 
         verify(validaAtendimentoService).porIdEmAtendimento(id);
-        verify(solicitacaoRepository, never()).findByIdAndStatusSolicitacao(any(Long.class), any(StatusSolicitacao.class));
+        verify(solicitacaoRepository, never()).findById(any(Long.class));
+        verify(validaAtendimentoService, never()).porStatusEmAtendimentoOuFinalizado(any(Solicitacao.class));
         verify(solicitacaoRepository, never()).save(any(Solicitacao.class));
         verify(atendenteRepository, never()).save(any(Atendente.class));
         verify(encaminharDaFilaParaAtendente, never()).encaminharParaAtendente(any(Equipe.class));
