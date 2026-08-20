@@ -12,13 +12,51 @@ export function FilaEspera({ equipe, anchor, now }){
     return (
     <section aria-label="Tickets em fila" className="flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm">
       
+      {/* Cabeçalho da Tabela */}
+      <div className="flex items-center justify-between gap-4 border-b border-gray-200 p-5">
+
+        <div className="flex items-center gap-2">
+          
+          <span className={`flex h-8 w-8 items-center justify-center rounded-md ${BG_AZUL_ESCURO} text-white`}>
+            <Inbox className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <h2 className={`text-base font-semibold ${TEXTO_PRETO_BG_BRANCO}`}>Fila de espera</h2>
+
+        </div>
+        
+        <div className="text-right">
+            <p className="font-mono text-sm font-semibold tabular-nums">
+                
+                <span className={quaseCheia ? "text-red-600" : `${TEXTO_PRETO_BG_BRANCO}`}>{ocupacao}</span>
+                <span className={`${TEXTO_CINZA_BG_BRANCO}`}>/{capacidade}</span>
+
+            </p>
+            <p className={`text-xs ${TEXTO_CINZA_BG_BRANCO}`}>na fila</p>
+        </div>
+      </div>
+
+      <div className="px-5 pt-4">
+
+        <div className="h-2 w-full overflow-hidden rounded-full bg-[lab(94.1797%_-.807792_-3.6664)]">
+            <div
+                className={quaseCheia ? "h-full rounded-full bg-red-500" : "h-full rounded-full bg-[lab(78.9046%_19.1698_47.5514)]"}
+                style={{ width: `${porcentagemPreenchida}%` }}
+            />
+        </div>
+
+      </div>
+
+      {/* Lista de Tickets */}
       <ul className="divide-y divide-gray-200">
         {equipe?.fila?.map((ticket) => {
+          // Calcula o tempo de espera real baseado na âncora do useClock
           const esperou =
             anchor === null || now === null ? null : elapsedFromMinsAgo(anchor, now, (elapsedSeconds(ticket.dataHoraEntrouNaFila, now) / 60));
             
+          // Verifica se o cliente já passou da média de espera da fila
           const esperaLonga = esperou !== null && esperou > equipe.tempoMedioEspera;
           
+          // Calcula a hora exata que ele entrou
           const horaQueEntrou = formatClock(ticket.dataHoraEntrouNaFila);
           
           return (
@@ -58,3 +96,12 @@ export function FilaEspera({ equipe, anchor, now }){
           );
         })}
 
+        {/* Mensagem caso a fila esteja vazia */}
+        {equipe?.tickets?.length === 0 ? (
+          <li className={`p-8 text-center text-sm ${TEXTO_CINZA_BG_BRANCO}`}>Nenhum ticket em fila. A equipe está com tempo livre!</li>
+        ) : null}
+      </ul>
+      
+    </section>
+  );
+}
