@@ -60,7 +60,7 @@ class MesesMetricasServiceTest {
     @DisplayName("Deve gerar lista de meses quando encontrar solicitacao")
     void deveGerarListaMesesQuandoEncontrarSolicitacao() {
 
-        LocalDate dataInicial = LocalDate.of(2026, Month.JANUARY, 15);
+        LocalDate dataInicial = LocalDate.of(2026, Month.JANUARY, 20);
         LocalDate hoje = LocalDate.of(2026, Month.MARCH, 20);
 
         Solicitacao solicitacao = Solicitacao.builder()
@@ -117,7 +117,7 @@ class MesesMetricasServiceTest {
     @DisplayName("Deve gerar lista com meses do mesmo ano")
     void deveGerarListaMesesMesmoAno() {
 
-        LocalDate dataInicial = LocalDate.of(2026, Month.JANUARY, 1);
+        LocalDate dataInicial = LocalDate.of(2026, Month.JANUARY, 20);
         LocalDate hoje = LocalDate.of(2026, Month.JUNE, 15);
 
         Solicitacao solicitacao = Solicitacao.builder()

@@ -2,8 +2,10 @@ package br.com.ubots.flowpay.service.relatorios;
 
 import br.com.ubots.flowpay.controller.response.TelaHomeResponse;
 import br.com.ubots.flowpay.domain.Equipe;
+import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.domain.enums.Categoria;
 import br.com.ubots.flowpay.domain.enums.StatusSolicitacao;
+import br.com.ubots.flowpay.helper.DateTimeNow;
 import br.com.ubots.flowpay.repository.EquipeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.EMPRESTIMO;
 import static br.com.ubots.flowpay.domain.enums.Categoria.*;
 import static br.com.ubots.flowpay.factory.EquipeFactory.equipe;
 import static br.com.ubots.flowpay.factory.SolicitacaoFactory.solicitacao;
@@ -39,7 +42,41 @@ class TelaHomeServiceTest {
 
         Equipe equipeI = equipe(CARTAO);
         equipeI.getFila().getSolicitacoes().add(solicitacao(StatusSolicitacao.EM_ATENDIMENTO));
-        Equipe equipeII = equipe(EMPRESTIMO);
+        equipeI.getFila().getSolicitacoes().add(solicitacao(StatusSolicitacao.FINALIZADO));
+        equipeI.getFila().getSolicitacoes().add(Solicitacao
+                .builder()
+                .id(1L)
+                .referenciaConversa(20260731000001L)
+                .statusSolicitacao(StatusSolicitacao.FINALIZADO)
+                .assunto(EMPRESTIMO.getDescricao())
+                .dataHoraInicialSolicitacao(DateTimeNow.now().minusDays(1))
+                .dataHoraInicialFila(DateTimeNow.now().minusSeconds(30))
+                .dataHoraInicialAtendimento(DateTimeNow.now())
+                .versao(0L)
+                .build());
+        equipeI.getFila().getSolicitacoes().add(Solicitacao
+                .builder()
+                .id(1L)
+                .referenciaConversa(20260731000001L)
+                .statusSolicitacao(StatusSolicitacao.FINALIZADO)
+                .assunto(EMPRESTIMO.getDescricao())
+                .dataHoraInicialSolicitacao(DateTimeNow.now().minusMonths(1))
+                .dataHoraInicialFila(DateTimeNow.now().minusSeconds(30))
+                .dataHoraInicialAtendimento(DateTimeNow.now())
+                .versao(0L)
+                .build());
+        equipeI.getFila().getSolicitacoes().add(Solicitacao
+                .builder()
+                .id(1L)
+                .referenciaConversa(20260731000001L)
+                .statusSolicitacao(StatusSolicitacao.FINALIZADO)
+                .assunto(EMPRESTIMO.getDescricao())
+                .dataHoraInicialSolicitacao(DateTimeNow.now().minusYears(1))
+                .dataHoraInicialFila(DateTimeNow.now().minusSeconds(30))
+                .dataHoraInicialAtendimento(DateTimeNow.now())
+                .versao(0L)
+                .build());
+        Equipe equipeII = equipe(Categoria.EMPRESTIMO);
         Equipe equipeIII = equipe(OUTROS_ASSUNTOS);
 
         equipes.add(equipeI);

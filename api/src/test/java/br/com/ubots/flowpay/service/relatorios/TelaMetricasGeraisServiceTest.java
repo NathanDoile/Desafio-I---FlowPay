@@ -5,17 +5,20 @@ import br.com.ubots.flowpay.domain.Equipe;
 import br.com.ubots.flowpay.domain.Fila;
 import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.domain.enums.Categoria;
+import br.com.ubots.flowpay.helper.DateNow;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +121,36 @@ class TelaMetricasGeraisServiceTest {
                 .dataHoraInicialSolicitacao(dataInicial)
                 .dataHoraInicialAtendimento(dataInicial)
                 .dataHoraFinalAtendimento(dataFinal)
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        Solicitacao solicitacao3 = Solicitacao.builder()
+                .id(2L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(null)
+                .dataHoraFinalAtendimento(null)
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        Solicitacao solicitacao4 = Solicitacao.builder()
+                .id(2L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(null)
+                .dataHoraFinalAtendimento(dataFinal)
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        Solicitacao solicitacao5 = Solicitacao.builder()
+                .id(2L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(null)
                 .dataHoraInicialFila(dataInicial)
                 .fila(fila)
                 .build();
@@ -248,6 +281,64 @@ class TelaMetricasGeraisServiceTest {
     }
 
     @Test
+    @DisplayName("Deve filtrar solicitacoes por equipe corretamente com uma fila sem equipe")
+    void deveFiltrarSolicitacoesPorEquipeCorretamenteComFilaSemEquipe() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Equipe equipe1 = Equipe.builder()
+                .id(1L)
+                .categoria(Categoria.CARTAO.getDescricao())
+                .build();
+
+        Fila fila1 = Fila.builder()
+                .id(1L)
+                .equipe(equipe1)
+                .build();
+
+        Fila fila2 = Fila.builder()
+                .id(2L)
+                .build();
+
+        Solicitacao solicitacao1 = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila1)
+                .build();
+
+        Solicitacao solicitacao2 = Solicitacao.builder()
+                .id(2L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(10))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila2)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao1, solicitacao2);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(2L, result.getTotalAtendimentos());
+        assertEquals(1, result.getEquipe().size());
+    }
+
+    @Test
     @DisplayName("Deve tratar solicitacoes sem fila corretamente")
     void deveTratarSolicitacoesSemFilaCorretamente() {
 
@@ -308,11 +399,16 @@ class TelaMetricasGeraisServiceTest {
         when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
                 .thenReturn(new ArrayList<>());
 
-        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+        try (MockedStatic<ChronoUnit> mockedDateNow = mockStatic(ChronoUnit.class)) {
 
-        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+            mockedDateNow.when(() -> ChronoUnit.DAYS.between(any(), any())).thenReturn(-1L);
 
-        assertNotNull(result);
-        assertEquals(0L, result.getMediaTicketsRecusadosPorDia());
+            TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+            verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+            assertNotNull(result);
+            assertEquals(0L, result.getMediaTicketsRecusadosPorDia());
+        }
     }
 }

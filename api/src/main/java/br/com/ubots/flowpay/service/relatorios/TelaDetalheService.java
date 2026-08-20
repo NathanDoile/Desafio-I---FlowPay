@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.*;
 import static br.com.ubots.flowpay.helper.DateTimeNow.diferencaEmSegundosEntre;
@@ -136,8 +137,11 @@ public class TelaDetalheService {
         return solicitacoes.stream()
                 .filter(solicitacao -> statusList.contains(solicitacao.getStatusSolicitacao()))
                 .filter(solicitacao -> {
-                    ZonedDateTime data = dataExtractor.apply(solicitacao).withZoneSameInstant(zoneId);
-                    return data != null && data.toLocalDate().equals(hoje);
+                    return Optional.ofNullable(dataExtractor.apply(solicitacao))
+                           .map(d -> d.withZoneSameInstant(zoneId))
+                           .map(ZonedDateTime::toLocalDate)
+                           .map(hoje::equals)
+                           .orElse(false);
                 })
                 .toList();
     }

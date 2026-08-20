@@ -84,8 +84,18 @@ class TelaDetalheServiceTest {
         solicitacaoFinalizada2.setDataHoraInicialAtendimento(agora.minusSeconds(80));
         solicitacaoFinalizada2.setDataHoraFinalAtendimento(agora.minusSeconds(40));
 
+        Solicitacao solicitacaoFinalizada3 = solicitacao(FINALIZADO);
+        solicitacaoFinalizada3.setDataHoraInicialAtendimento(agora.minusSeconds(80));
+        solicitacaoFinalizada3.setDataHoraFinalAtendimento(null);
+
+        Solicitacao solicitacaoFinalizada4 = solicitacao(FINALIZADO);
+        solicitacaoFinalizada4.setDataHoraInicialAtendimento(agora.minusSeconds(80));
+        solicitacaoFinalizada4.setDataHoraFinalAtendimento(agora.minusDays(1));
+
         equipe.getFila().getSolicitacoes().add(solicitacaoFinalizada1);
         equipe.getFila().getSolicitacoes().add(solicitacaoFinalizada2);
+        equipe.getFila().getSolicitacoes().add(solicitacaoFinalizada3);
+        equipe.getFila().getSolicitacoes().add(solicitacaoFinalizada4);
 
         when(equipeRepository.findByCategoria(CARTAO.getDescricao())).thenReturn(equipe);
 
