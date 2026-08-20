@@ -1,37 +1,36 @@
 import { useEffect, useRef } from 'react';
 
+/**
+ * Hook para executar uma função repetidamente apenas quando a aba estiver visível.
+ * @param {Function} callback - Função que faz a busca na API
+ * @param {number} intervalMs - Intervalo em ms (Padrão: 10 segundos)
+ */
 export function useSmartPolling(callback, intervalMs = 10000) {
   const savedCallback = useRef(callback);
 
-  // Mantém a referência da função sempre atualizada sem acionar re-renders
+  // Mantém a referência da função sempre atualizada sem redefinir os timers
   useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
 
   useEffect(() => {
-    // Função auxiliar que só roda se a aba estiver visível
-    const tick = () => {
+    // 1. Função única para verificar a visibilidade e executar a callback
+    const executeCallbackIfVisible = () => {
       if (document.visibilityState === 'visible') {
         savedCallback.current();
       }
     };
 
-    // 1. Cria o timer
-    const id = setInterval(tick, intervalMs);
+    // 2. Configura o intervalo repetitivo usando a função reutilizável
+    const intervalId = setInterval(executeCallbackIfVisible, intervalMs);
 
-    // 2. Dispara a requisição imediatamente quando o usuário volta para a aba
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        savedCallback.current();
-      }
-    };
+    // 3. Listener para disparar a busca quando o usuário retorna para a aba
+    document.addEventListener('visibilitychange', executeCallbackIfVisible);
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // 3. Limpa o timer e o event listener
+    // 4. Limpeza de memória
     return () => {
-      clearInterval(id);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', executeCallbackIfVisible);
     };
-  }, [intervalMs]); // Apenas intervalMs nas dependências para o timer NUNCA resetar em loop
+  }, [intervalMs]);
 }

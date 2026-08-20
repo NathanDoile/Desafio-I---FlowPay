@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Home } from './home.screen.jsx'; // Ajuste o caminho da sua screen
+import { Home } from './home.screen.jsx';
 
 // 1. Mock do React Router
 const mockNavigate = vi.fn();
@@ -9,13 +9,15 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
 }));
 
-// 2. Mock do Hook da API
+// 2. Mock do Hook da API e do Smart Polling
 const mockObterHome = vi.fn();
+const mockUseSmartPolling = vi.fn();
+
 vi.mock('../../../hooks/index.js', () => ({
     useObterHome: () => ({
         obterHome: mockObterHome,
     }),
-    useSmartPolling: vi.fn(),
+    useSmartPolling: (callback, interval) => mockUseSmartPolling(callback, interval),
 }));
 
 // 3. Mock leve dos componentes filhos
@@ -85,5 +87,36 @@ describe('Screen Home', () => {
         expect(mockNavigate).toHaveBeenCalledWith('/detalhes-fila', {
             state: { equipeDesejada: 'CARTAO' },
         });
+    });
+
+    it('Deve registrar o useSmartPolling e recarregar os dados silenciosamente via reatualizarDadosHome', async () => {
+        render(<Home />);
+
+        await waitFor(() => {
+            expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+        });
+
+        // Confirma se o Smart Polling foi registrado
+        expect(mockUseSmartPolling).toHaveBeenCalled();
+
+        // Extrai a função reatualizarDadosHome passada para o useSmartPolling
+        const callbackPolling = mockUseSmartPolling.mock.calls[0][0];
+
+        // Prepara o retorno atualizado da API
+        const mockDadosAtualizados = {
+            ...mockDadosHome,
+            totalTickets: 50,
+        };
+        mockObterHome.mockResolvedValueOnce(mockDadosAtualizados);
+
+        // Executa a callback do polling
+        await callbackPolling();
+
+        // Aguarda o React re-renderizar o estado no DOM com o valor 50
+        await waitFor(() => {
+            expect(screen.getByText('50')).toBeInTheDocument();
+        });
+
+        expect(mockObterHome).toHaveBeenCalled();
     });
 });

@@ -1,15 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MetricasFilas } from './metricasFilas.screen.jsx'; // Ajuste o caminho da sua screen
+import { MetricasFilas } from './metricasFilas.screen.jsx';
 
-// 1. Mock do Hook da API
+// 1. Mock do Hook da API e do Smart Polling
 const mockObterMetricasGerais = vi.fn();
+const mockUseSmartPolling = vi.fn();
+
 vi.mock('../../../hooks/index.js', () => ({
     useObterMetricasGerais: () => ({
         obterMetricasGerais: mockObterMetricasGerais,
     }),
-    useSmartPolling: vi.fn(),
+    useSmartPolling: (callback, interval) => mockUseSmartPolling(callback, interval),
 }));
 
 // 2. Mock dos Utilitários
@@ -81,5 +83,32 @@ describe('Screen MetricasFilas', () => {
 
         // Verifica se a API buscou novamente os dados com o novo período ('2026-09-01')
         expect(mockObterMetricasGerais).toHaveBeenCalledWith('2026-09-01');
+    });
+
+    it('Deve registrar o useSmartPolling e recarregar os dados silenciosamente quando o polling for acionado', async () => {
+        render(<MetricasFilas />);
+
+        await waitFor(() => {
+            expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
+        });
+
+        // Confirma se o Smart Polling foi registrado na inicialização
+        expect(mockUseSmartPolling).toHaveBeenCalled();
+
+        // Extrai a função reatualizarDadosMetricas repassada para o useSmartPolling
+        const callbackPolling = mockUseSmartPolling.mock.calls[0][0];
+
+        // Prepara novos dados retornados no ciclo do Polling
+        const mockDadosAtualizados = {
+            totalTickets: 200,
+            equipe: [{ id: '1', nome: 'Cartão' }],
+        };
+        mockObterMetricasGerais.mockResolvedValueOnce(mockDadosAtualizados);
+
+        // Dispara a callback do polling
+        await callbackPolling();
+
+        // Confirma que a API foi consultada para reatualizar silenciosamente
+        expect(mockObterMetricasGerais).toHaveBeenCalled();
     });
 });

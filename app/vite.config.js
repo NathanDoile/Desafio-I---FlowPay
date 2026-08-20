@@ -14,7 +14,7 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'src/main.jsx',
-        'src/app.jsx', 
+        'src/App.jsx', 
         '**/*.constant.jsx', // Não testamos constantes
         '**/*.mock.js',
         '**/*.test.{js,jsx}', // Não faz sentido o teste testar o próprio teste

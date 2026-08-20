@@ -1,30 +1,30 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { DetalheFila } from './detalheFila.screen.jsx'; // Ajuste o caminho conforme sua estrutura
+import { DetalheFila } from './detalheFila.screen.jsx';
 import { useLocation } from 'react-router-dom';
 
-// 1. Mock do React Router
-const mockLocationState = { equipeDesejada: 'EMPRESTIMOS' };
+const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate,
     useLocation: vi.fn(),
 }));
 
-// 2. Mock dos Hooks Customizados
 const mockObterDetalheEquipe = vi.fn();
+const mockUseSmartPolling = vi.fn();
+
 vi.mock('../../../hooks/index.js', () => ({
     useObterDetalheEquipe: () => ({
         obterDetalheEquipe: mockObterDetalheEquipe,
     }),
-    useSmartPolling: vi.fn(),
+    useSmartPolling: (callback, interval) => mockUseSmartPolling(callback, interval),
 }));
 
+const mockResetAnchor = vi.fn();
 vi.mock('../../../hooks/useClock.js', () => ({
-    useClock: () => ({ anchor: 1000, now: 2000 }),
+    useClock: () => ({ anchor: 1000, now: 2000, resetAnchor: mockResetAnchor }),
 }));
 
-// 3. Mock simples dos componentes visuais filhos para manter o teste focado na orquestração
 vi.mock('../../component/index.js', () => ({
     Loading: () => <div data-testid="loading-spinner">Carregando...</div>,
     CabecalhoDetalheFila: ({ nomeEquipe, onSelecionarEquipe }) => (
@@ -57,45 +57,57 @@ describe('Screen DetalheFila', () => {
         
         render(<DetalheFila />);
 
-        // Verifica se exibiu a tela de carregamento inicialmente
         expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
 
-        // Aguarda o término da busca da API
         await waitFor(() => {
             expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
         });
 
-        // Confirma se a API foi chamada com o parâmetro vindo de location.state ('EMPRESTIMOS')
         expect(mockObterDetalheEquipe).toHaveBeenCalledWith('EMPRESTIMOS');
-
-        // Confirma a renderização dos elementos do conteúdo principal
         expect(screen.getByText('Resumo Metrica Card')).toBeInTheDocument();
         expect(screen.getByText('Fila Espera')).toBeInTheDocument();
     });
 
     it('Deve recarregar os dados quando o usuário selecionar outra equipe no cabeçalho', async () => {
         const user = userEvent.setup();
+        vi.mocked(useLocation).mockReturnValue({ state: { equipeDesejada: 'EMPRESTIMOS' } });
+
         render(<DetalheFila />);
 
-        // Aguarda o primeiro carregamento
         await waitFor(() => {
             expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
         });
 
-        // Simula o clique no botão do cabeçalho mockado para trocar a equipe
         const botaoTrocar = screen.getByRole('button', { name: /trocar para cartão/i });
         await user.click(botaoTrocar);
 
-        // Verifica se a API foi consultada novamente com a nova equipe selecionada
         expect(mockObterDetalheEquipe).toHaveBeenCalledWith('CARTAO');
     });
 
     it('Deve usar "CARTAO" como equipe padrão se acessar a tela sem state no location', async () => {
-
         vi.mocked(useLocation).mockReturnValue({ state: null });
         
         render(<DetalheFila />);
 
         expect(mockObterDetalheEquipe).toHaveBeenCalledWith('CARTAO');
+    });
+
+    it('Deve registrar o polling com useSmartPolling e recarregar dados + resetAnchor quando o polling for acionado', async () => {
+        vi.mocked(useLocation).mockReturnValue({ state: { equipeDesejada: 'EMPRESTIMOS' } });
+
+        render(<DetalheFila />);
+
+        // Verifica se o hook useSmartPolling foi registrado na montagem do componente
+        expect(mockUseSmartPolling).toHaveBeenCalled();
+
+        // Extrai a função reatualizarDadosEquipe passada como primeiro argumento para o useSmartPolling
+        const callbackPolling = mockUseSmartPolling.mock.calls[0][0];
+
+        // Executa a callback manualmente simulando um ciclo do Polling
+        await callbackPolling();
+
+        // Confirma que a busca silenciosa foi executada e que a âncora do relógio foi resetada
+        expect(mockObterDetalheEquipe).toHaveBeenCalledWith('EMPRESTIMOS');
+        expect(mockResetAnchor).toHaveBeenCalled();
     });
 });
