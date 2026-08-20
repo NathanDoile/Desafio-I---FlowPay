@@ -5,7 +5,6 @@ import br.com.ubots.flowpay.domain.Equipe;
 import br.com.ubots.flowpay.domain.Fila;
 import br.com.ubots.flowpay.domain.Solicitacao;
 import br.com.ubots.flowpay.domain.enums.Categoria;
-import br.com.ubots.flowpay.helper.DateNow;
 import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -391,24 +392,25 @@ class TelaMetricasGeraisServiceTest {
     }
 
     @Test
-    @DisplayName("Deve calcular media por dia zero quando dias for zero")
+    @DisplayName("Deve calcular media por dia zero quando dias for zero ou negativo")
     void deveCalcularMediaPorDiaZeroQuandoDiasForZero() {
 
-        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+        LocalDate dataOriginal = LocalDate.of(2026, Month.AUGUST, 14);
+        LocalDate inicioInvertido = LocalDate.of(2026, Month.AUGUST, 31);
+        LocalDate fimInvertido = LocalDate.of(2026, Month.AUGUST, 1);
 
-        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+        LocalDate dataSpy = spy(dataOriginal);
+
+        doReturn(inicioInvertido).when(dataSpy).with(TemporalAdjusters.firstDayOfMonth());
+        doReturn(fimInvertido).when(dataSpy).with(TemporalAdjusters.lastDayOfMonth());
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(
+                any(ZonedDateTime.class), any(ZonedDateTime.class)))
                 .thenReturn(new ArrayList<>());
 
-        try (MockedStatic<ChronoUnit> mockedDateNow = mockStatic(ChronoUnit.class)) {
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(dataSpy);
 
-            mockedDateNow.when(() -> ChronoUnit.DAYS.between(any(), any())).thenReturn(-1L);
-
-            TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
-
-            verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
-
-            assertNotNull(result);
-            assertEquals(0L, result.getMediaTicketsRecusadosPorDia());
-        }
+        assertNotNull(result);
+        assertEquals(0L, result.getMediaTicketsRecusadosPorDia());
     }
 }
