@@ -9,6 +9,9 @@ import br.com.ubots.flowpay.repository.SolicitacaoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.FINALIZADO;
 import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.RECUSADO_POR_FILA_ESPERA_CHEIA;
@@ -476,51 +480,6 @@ class TelaMetricasGeraisServiceTest {
     }
 
     @Test
-    @DisplayName("Deve extrair equipes quando solicitacao tem fila e equipe")
-    void deveExtrairEquipesQuandoSolicitacaoTemFilaEEquipe() {
-
-        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
-
-        ZonedDateTime dataInicial = ZonedDateTime.of(
-                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
-                java.time.ZoneId.of("America/Sao_Paulo"));
-
-        Equipe equipe = Equipe.builder()
-                .id(1L)
-                .categoria(Categoria.CARTAO.getDescricao())
-                .build();
-
-        Fila fila = Fila.builder()
-                .id(1L)
-                .equipe(equipe)
-                .build();
-
-        Solicitacao solicitacao = Solicitacao.builder()
-                .id(1L)
-                .statusSolicitacao(FINALIZADO)
-                .dataHoraInicialSolicitacao(dataInicial)
-                .dataHoraInicialAtendimento(dataInicial)
-                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
-                .dataHoraInicialFila(dataInicial)
-                .fila(fila)
-                .build();
-
-        List<Solicitacao> solicitacoes = List.of(solicitacao);
-
-        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
-                .thenReturn(solicitacoes);
-
-        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
-
-        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
-
-        assertNotNull(result);
-        assertEquals(1L, result.getTotalAtendimentos());
-        assertEquals(1, result.getEquipe().size());
-        assertEquals(Categoria.CARTAO.getDescricao(), result.getEquipe().get(0).getNome());
-    }
-
-    @Test
     @DisplayName("Deve filtrar quando fila existe equipe existe mas equals retorna false")
     void deveFiltrarQuandoFilaExisteEquipeExisteMasEqualsRetornaFalse() {
 
@@ -529,11 +488,6 @@ class TelaMetricasGeraisServiceTest {
         ZonedDateTime dataInicial = ZonedDateTime.of(
                 java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
                 java.time.ZoneId.of("America/Sao_Paulo"));
-
-        Equipe equipeAlvo = Equipe.builder()
-                .id(1L)
-                .categoria(Categoria.CARTAO.getDescricao())
-                .build();
 
         Equipe equipeDiferente = Equipe.builder()
                 .id(2L)
@@ -570,54 +524,16 @@ class TelaMetricasGeraisServiceTest {
         assertEquals(Categoria.EMPRESTIMO.getDescricao(), result.getEquipe().get(0).getNome());
     }
 
-    @Test
-    @DisplayName("Deve filtrar quando getFila null")
-    void deveFiltrarQuandoGetFilaNull() {
+    @ParameterizedTest
+    @DisplayName("Deve filtrar solicitacoes por diferentes combinacoes de fila e equipe")
+    @MethodSource("provideFilaEquipeCombinacoes")
+    void deveFiltrarSolicitacoesPorDiferentesCombinacoesDeFilaEEquipe(Fila fila, int tamanhoEquipeEsperado) {
 
         LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
 
         ZonedDateTime dataInicial = ZonedDateTime.of(
                 java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
                 java.time.ZoneId.of("America/Sao_Paulo"));
-
-        Solicitacao solicitacao = Solicitacao.builder()
-                .id(1L)
-                .statusSolicitacao(FINALIZADO)
-                .dataHoraInicialSolicitacao(dataInicial)
-                .dataHoraInicialAtendimento(dataInicial)
-                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
-                .dataHoraInicialFila(dataInicial)
-                .fila(null)
-                .build();
-
-        List<Solicitacao> solicitacoes = List.of(solicitacao);
-
-        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
-                .thenReturn(solicitacoes);
-
-        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
-
-        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
-
-        assertNotNull(result);
-        assertEquals(1L, result.getTotalAtendimentos());
-        assertEquals(0, result.getEquipe().size());
-    }
-
-    @Test
-    @DisplayName("Deve filtrar quando getFila not null mas getEquipe null")
-    void deveFiltrarQuandoGetFilaNotNullMasGetEquipeNull() {
-
-        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
-
-        ZonedDateTime dataInicial = ZonedDateTime.of(
-                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
-                java.time.ZoneId.of("America/Sao_Paulo"));
-
-        Fila fila = Fila.builder()
-                .id(1L)
-                .equipe(null)
-                .build();
 
         Solicitacao solicitacao = Solicitacao.builder()
                 .id(1L)
@@ -640,50 +556,40 @@ class TelaMetricasGeraisServiceTest {
 
         assertNotNull(result);
         assertEquals(1L, result.getTotalAtendimentos());
-        assertEquals(0, result.getEquipe().size());
+        assertEquals(tamanhoEquipeEsperado, result.getEquipe().size());
     }
 
-    @Test
-    @DisplayName("Deve filtrar quando getFila not null getEquipe not null equals true")
-    void deveFiltrarQuandoGetFilaNotNullGetEquipeNotNullEqualsTrue() {
-
-        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
-
-        ZonedDateTime dataInicial = ZonedDateTime.of(
-                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
-                java.time.ZoneId.of("America/Sao_Paulo"));
-
+    private static Stream<Arguments> provideFilaEquipeCombinacoes() {
         Equipe equipe = Equipe.builder()
                 .id(1L)
                 .categoria(Categoria.CARTAO.getDescricao())
                 .build();
 
-        Fila fila = Fila.builder()
+        return Stream.of(
+                Arguments.of(null, 0),
+                Arguments.of(Fila.builder().id(1L).equipe(null).build(), 0),
+                Arguments.of(Fila.builder().id(1L).equipe(equipe).build(), 1)
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("Deve testar temFilaEEquipe com diferentes combinacoes")
+    @MethodSource("provideTemFilaEEquipeCombinacoes")
+    void deveTestarTemFilaEEquipe(Solicitacao solicitacao, boolean esperado) {
+        boolean resultado = tested.temFilaEEquipe(solicitacao);
+        assertEquals(esperado, resultado);
+    }
+
+    private static Stream<Arguments> provideTemFilaEEquipeCombinacoes() {
+        Equipe equipe = Equipe.builder()
                 .id(1L)
-                .equipe(equipe)
+                .categoria(Categoria.CARTAO.getDescricao())
                 .build();
 
-        Solicitacao solicitacao = Solicitacao.builder()
-                .id(1L)
-                .statusSolicitacao(FINALIZADO)
-                .dataHoraInicialSolicitacao(dataInicial)
-                .dataHoraInicialAtendimento(dataInicial)
-                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
-                .dataHoraInicialFila(dataInicial)
-                .fila(fila)
-                .build();
-
-        List<Solicitacao> solicitacoes = List.of(solicitacao);
-
-        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
-                .thenReturn(solicitacoes);
-
-        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
-
-        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
-
-        assertNotNull(result);
-        assertEquals(1L, result.getTotalAtendimentos());
-        assertEquals(1, result.getEquipe().size());
+        return Stream.of(
+                Arguments.of(Solicitacao.builder().fila(null).build(), false),
+                Arguments.of(Solicitacao.builder().fila(Fila.builder().equipe(null).build()).build(), false),
+                Arguments.of(Solicitacao.builder().fila(Fila.builder().equipe(equipe).build()).build(), true)
+        );
     }
 }

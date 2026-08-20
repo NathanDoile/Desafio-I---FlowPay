@@ -98,10 +98,14 @@ public class TelaMetricasGeraisService {
 
     private List<Equipe> extrairEquipes(List<Solicitacao> solicitacoes) {
         return solicitacoes.stream()
-                .filter(s -> s.getFila() != null && s.getFila().getEquipe() != null)
+                .filter(this::temFilaEEquipe)
                 .map(s -> s.getFila().getEquipe())
                 .distinct()
                 .toList();
+    }
+
+    boolean temFilaEEquipe(Solicitacao solicitacao) {
+        return solicitacao.getFila() != null && solicitacao.getFila().getEquipe() != null;
     }
 
     private List<MetricasGeraisEquipeResponse> gerarMetricasPorEquipe(

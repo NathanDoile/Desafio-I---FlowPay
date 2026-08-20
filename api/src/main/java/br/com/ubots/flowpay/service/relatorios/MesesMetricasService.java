@@ -37,10 +37,18 @@ public class MesesMetricasService {
 
             dataInicial = dataInicial.plusMonths(1);
 
-        }while (dataInicial.isBefore(hoje) ||
-                dataInicial.equals(hoje) ||
-                (dataInicial.getMonth().equals(hoje.getMonth()) && dataInicial.getYear() == hoje.getYear()));
+        }while (deveContinuarLoop(dataInicial, hoje));
 
         return meses;
+    }
+
+    boolean deveContinuarLoop(LocalDate dataInicial, LocalDate hoje) {
+        return dataInicial.isBefore(hoje) ||
+                dataInicial.equals(hoje) ||
+                mesmoMesEAno(dataInicial, hoje);
+    }
+
+    boolean mesmoMesEAno(LocalDate dataInicial, LocalDate hoje) {
+        return dataInicial.getMonth().equals(hoje.getMonth()) && dataInicial.getYear() == hoje.getYear();
     }
 }
