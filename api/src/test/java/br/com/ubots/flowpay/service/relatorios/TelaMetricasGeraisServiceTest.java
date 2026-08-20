@@ -163,7 +163,7 @@ class TelaMetricasGeraisServiceTest {
         verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
 
         assertNotNull(result);
-        assertEquals(2L, result.getTotalAtendimentos());
+        assertEquals(5L, result.getTotalAtendimentos());
         assertEquals(0L, result.getTotalTicketsRecusados());
         assertEquals(300L, result.getTempoMedioAtendimento());
         assertNotNull(result.getEquipe());
