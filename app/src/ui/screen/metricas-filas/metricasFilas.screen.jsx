@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { CabecalhoMetricas, Graficos, MetricasGeraisCard, TabelaMetricas, Loading } from "../../component/index.js";
-import { useObterMetricasGerais } from "../../../hooks/index.js";
+import { useObterMetricasGerais, useSmartPolling } from "../../../hooks/index.js";
 import { converterDataParaSeletor } from "../../../utils/date.js";
 
 export function MetricasFilas() {
@@ -23,10 +23,19 @@ export function MetricasFilas() {
         setDadosMetricas(response);
         console.log(response)
       }
+
+    async function reatualizarDadosMetricas(){
+    
+        const response = await obterMetricasGerais(periodoSelecionado);
+    
+        setDadosMetricas(response);
+    }
     
       useEffect(() => {
         atualizarDadosMetricas();
       }, [periodoSelecionado]);
+
+    useSmartPolling(reatualizarDadosMetricas);
 
     return (
         <div className="min-h-screen bg-gray-50 pb-12">
