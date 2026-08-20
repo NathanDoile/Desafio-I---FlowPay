@@ -592,4 +592,31 @@ class TelaMetricasGeraisServiceTest {
                 Arguments.of(Solicitacao.builder().fila(Fila.builder().equipe(equipe).build()).build(), true)
         );
     }
+
+    @ParameterizedTest
+    @DisplayName("Deve testar pertenceAEquipe com diferentes combinacoes")
+    @MethodSource("providePertenceAEquipeCombinacoes")
+    void deveTestarPertenceAEquipe(Solicitacao solicitacao, Equipe equipe, boolean esperado) {
+        boolean resultado = tested.pertenceAEquipe(solicitacao, equipe);
+        assertEquals(esperado, resultado);
+    }
+
+    private static Stream<Arguments> providePertenceAEquipeCombinacoes() {
+        Equipe equipe1 = Equipe.builder()
+                .id(1L)
+                .categoria(Categoria.CARTAO.getDescricao())
+                .build();
+
+        Equipe equipe2 = Equipe.builder()
+                .id(2L)
+                .categoria(Categoria.EMPRESTIMO.getDescricao())
+                .build();
+
+        return Stream.of(
+                Arguments.of(Solicitacao.builder().fila(null).build(), equipe1, false),
+                Arguments.of(Solicitacao.builder().fila(Fila.builder().equipe(null).build()).build(), equipe1, false),
+                Arguments.of(Solicitacao.builder().fila(Fila.builder().equipe(equipe1).build()).build(), equipe1, true),
+                Arguments.of(Solicitacao.builder().fila(Fila.builder().equipe(equipe2).build()).build(), equipe1, false)
+        );
+    }
 }

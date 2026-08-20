@@ -142,7 +142,13 @@ public class TelaMetricasGeraisService {
 
     private List<Solicitacao> filtrarPorEquipe(List<Solicitacao> solicitacoes, Equipe equipe) {
         return solicitacoes.stream()
-                .filter(s -> s.getFila() != null && s.getFila().getEquipe() != null && s.getFila().getEquipe().equals(equipe))
+                .filter(s -> pertenceAEquipe(s, equipe))
                 .toList();
+    }
+
+    boolean pertenceAEquipe(Solicitacao solicitacao, Equipe equipe) {
+        return solicitacao.getFila() != null &&
+               solicitacao.getFila().getEquipe() != null &&
+               solicitacao.getFila().getEquipe().equals(equipe);
     }
 }
