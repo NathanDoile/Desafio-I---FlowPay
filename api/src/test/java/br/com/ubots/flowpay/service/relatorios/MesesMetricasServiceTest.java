@@ -269,4 +269,108 @@ class MesesMetricasServiceTest {
             assertEquals(3, result.size());
         }
     }
+
+    @Test
+    @DisplayName("Deve parar loop quando mes diferente e ano diferente")
+    void devePararLoopQuandoMesDiferenteAnoDiferente() {
+
+        LocalDate dataInicial = LocalDate.of(2025, Month.JANUARY, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 20);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(15, result.size());
+        }
+    }
+
+    @Test
+    @DisplayName("Deve continuar loop quando isBefore true")
+    void deveContinuarLoopQuandoIsBeforeTrue() {
+
+        LocalDate dataInicial = LocalDate.of(2026, Month.JANUARY, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 1);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(3, result.size());
+        }
+    }
+
+    @Test
+    @DisplayName("Deve continuar loop quando equals true")
+    void deveContinuarLoopQuandoEqualsTrue() {
+
+        LocalDate dataInicial = LocalDate.of(2026, Month.MARCH, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 1);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(1, result.size());
+        }
+    }
+
+    @Test
+    @DisplayName("Deve continuar loop quando getMonth equals true e getYear equals true")
+    void deveContinuarLoopQuandoGetMonthEqualsTrueEGetYearEqualsTrue() {
+
+        LocalDate dataInicial = LocalDate.of(2026, Month.MARCH, 1);
+        LocalDate hoje = LocalDate.of(2026, Month.MARCH, 15);
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .dataHoraInicialSolicitacao(ZonedDateTime.of(dataInicial.atStartOfDay(), java.time.ZoneId.systemDefault()))
+                .build();
+
+        when(solicitacaoRepository.findById(1L)).thenReturn(java.util.Optional.of(solicitacao));
+
+        try (MockedStatic<DateNow> mockedDateNow = mockStatic(DateNow.class)) {
+            mockedDateNow.when(DateNow::now).thenReturn(hoje);
+
+            List<LocalDate> result = tested.gerarMesesMetricas();
+
+            verify(solicitacaoRepository).findById(1L);
+
+            assertNotNull(result);
+            assertEquals(1, result.size());
+        }
+    }
 }

@@ -519,4 +519,171 @@ class TelaMetricasGeraisServiceTest {
         assertEquals(1, result.getEquipe().size());
         assertEquals(Categoria.CARTAO.getDescricao(), result.getEquipe().get(0).getNome());
     }
+
+    @Test
+    @DisplayName("Deve filtrar quando fila existe equipe existe mas equals retorna false")
+    void deveFiltrarQuandoFilaExisteEquipeExisteMasEqualsRetornaFalse() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Equipe equipeAlvo = Equipe.builder()
+                .id(1L)
+                .categoria(Categoria.CARTAO.getDescricao())
+                .build();
+
+        Equipe equipeDiferente = Equipe.builder()
+                .id(2L)
+                .categoria(Categoria.EMPRESTIMO.getDescricao())
+                .build();
+
+        Fila fila = Fila.builder()
+                .id(1L)
+                .equipe(equipeDiferente)
+                .build();
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(1L, result.getTotalAtendimentos());
+        assertEquals(1, result.getEquipe().size());
+        assertEquals(Categoria.EMPRESTIMO.getDescricao(), result.getEquipe().get(0).getNome());
+    }
+
+    @Test
+    @DisplayName("Deve filtrar quando getFila null")
+    void deveFiltrarQuandoGetFilaNull() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(null)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(1L, result.getTotalAtendimentos());
+        assertEquals(0, result.getEquipe().size());
+    }
+
+    @Test
+    @DisplayName("Deve filtrar quando getFila not null mas getEquipe null")
+    void deveFiltrarQuandoGetFilaNotNullMasGetEquipeNull() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Fila fila = Fila.builder()
+                .id(1L)
+                .equipe(null)
+                .build();
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(1L, result.getTotalAtendimentos());
+        assertEquals(0, result.getEquipe().size());
+    }
+
+    @Test
+    @DisplayName("Deve filtrar quando getFila not null getEquipe not null equals true")
+    void deveFiltrarQuandoGetFilaNotNullGetEquipeNotNullEqualsTrue() {
+
+        LocalDate data = LocalDate.of(2026, Month.AUGUST, 14);
+
+        ZonedDateTime dataInicial = ZonedDateTime.of(
+                java.time.LocalDateTime.of(2026, Month.AUGUST, 1, 10, 0, 0),
+                java.time.ZoneId.of("America/Sao_Paulo"));
+
+        Equipe equipe = Equipe.builder()
+                .id(1L)
+                .categoria(Categoria.CARTAO.getDescricao())
+                .build();
+
+        Fila fila = Fila.builder()
+                .id(1L)
+                .equipe(equipe)
+                .build();
+
+        Solicitacao solicitacao = Solicitacao.builder()
+                .id(1L)
+                .statusSolicitacao(FINALIZADO)
+                .dataHoraInicialSolicitacao(dataInicial)
+                .dataHoraInicialAtendimento(dataInicial)
+                .dataHoraFinalAtendimento(dataInicial.plusMinutes(5))
+                .dataHoraInicialFila(dataInicial)
+                .fila(fila)
+                .build();
+
+        List<Solicitacao> solicitacoes = List.of(solicitacao);
+
+        when(solicitacaoRepository.findAllByDataHoraInicialSolicitacaoBetween(any(), any()))
+                .thenReturn(solicitacoes);
+
+        TelaMetricasGeraisResponse result = tested.gerarMetricasGerais(data);
+
+        verify(solicitacaoRepository).findAllByDataHoraInicialSolicitacaoBetween(any(), any());
+
+        assertNotNull(result);
+        assertEquals(1L, result.getTotalAtendimentos());
+        assertEquals(1, result.getEquipe().size());
+    }
 }
