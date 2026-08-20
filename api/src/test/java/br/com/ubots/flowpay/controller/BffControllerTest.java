@@ -14,6 +14,7 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRe
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,14 +32,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static br.com.ubots.flowpay.domain.enums.AssuntoSolicitacao.*;
-import static br.com.ubots.flowpay.domain.enums.StatusSolicitacao.RECUSADO_POR_FILA_ESPERA_CHEIA;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.PUT;
 
 @Sql(scripts = "/insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Testcontainers
 @AutoConfigureTestRestTemplate
@@ -102,7 +99,7 @@ class BffControllerTest {
 
         ResponseEntity<TelaHomeResponse> responseEntity = restTemplate.exchange(
                 "/relatorios/home",
-                GET,
+                HttpMethod.GET,
                 null,
                 TelaHomeResponse.class
         );
@@ -162,7 +159,7 @@ class BffControllerTest {
 
         ResponseEntity<TelaHomeResponse> responseEntity = restTemplate.exchange(
                 "/relatorios/home",
-                GET,
+                HttpMethod.GET,
                 null,
                 TelaHomeResponse.class
         );
@@ -200,9 +197,9 @@ class BffControllerTest {
 
         ZonedDateTime horaInicial = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
+        // Cria 13 solicitações: 1 será finalizada, 9 em andamento, 3 na fila, excedendo capacidade para testar cancelamento
         for(int i = 1; i <= 13; i++){
-
-            CriarSolicitacaoRequest requestI = CriarSolicitacaoRequest
+            CriarSolicitacaoRequest request = CriarSolicitacaoRequest
                     .builder()
                     .assunto(CARTAO.getDescricao())
                     .referenciaConversa((long) i)
@@ -211,17 +208,18 @@ class BffControllerTest {
             try {
                 restTemplate.postForEntity(
                         "/solicitacao",
-                        requestI,
+                        request,
                         Void.class
                 );
             } catch (Exception e) {
+                // Esperado: solicitação recusada quando fila atinge capacidade máxima
+                // Isso permite testar o cenário de atendimentos cancelados
             }
-
         }
 
         restTemplate.exchange(
                 "/solicitacao/" + 1 + "/finalizar",
-                PUT,
+                HttpMethod.PUT,
                 null,
                 Void.class
         );
@@ -230,7 +228,7 @@ class BffControllerTest {
 
         ResponseEntity<TelaDetalheResponse> responseEntity = restTemplate.exchange(
                 "/relatorios/detalhe/" + categoriaEquipe,
-                GET,
+                HttpMethod.GET,
                 null,
                 TelaDetalheResponse.class
         );
@@ -288,7 +286,7 @@ class BffControllerTest {
 
         ResponseEntity<List<LocalDate>> responseEntity = restTemplate.exchange(
                 "/relatorios/meses-metricas",
-                GET,
+                HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<LocalDate>>() {}
         );
@@ -326,7 +324,7 @@ class BffControllerTest {
 
         ResponseEntity<TelaMetricasGeraisResponse> responseEntity = restTemplate.exchange(
                 url,
-                GET,
+                HttpMethod.GET,
                 null,
                 TelaMetricasGeraisResponse.class
         );
