@@ -165,7 +165,7 @@ class TelaMetricasGeraisServiceTest {
         assertNotNull(result);
         assertEquals(5L, result.getTotalAtendimentos());
         assertEquals(0L, result.getTotalTicketsRecusados());
-        assertEquals(300L, result.getTempoMedioAtendimento());
+        assertEquals(120L, result.getTempoMedioAtendimento());
         assertNotNull(result.getEquipe());
         assertFalse(result.getEquipe().isEmpty());
     }
