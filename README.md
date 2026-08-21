@@ -403,13 +403,40 @@ Desafio-I---FlowPay/
 │   └── pom.xml                         # Dependências Maven
 └── app/                          # Frontend React
     ├── public/                       # Arquivos estáticos
+    │   ├── favicon.svg
+    │   └── icons.svg
     ├── src/                         # Código fonte React
-    │   ├── components/              # Componentes React
-    │   ├── pages/                   # Páginas da aplicação
-    │   ├── services/                # Serviços API
-    │   └── main.jsx                 # Entry point
+    │   ├── api/                     # Serviços API
+    │   │   ├── base/
+    │   │   ├── detalheEquipe/
+    │   │   ├── home/
+    │   │   ├── mesesMetricas/
+    │   │   └── metricasGerais/
+    │   ├── constants/               # Constantes da aplicação
+    │   ├── hooks/                   # Hooks customizados
+    │   ├── mocks/                   # Mocks para testes
+    │   ├── router/                  # Configuração de rotas
+    │   ├── ui/                      # Componentes UI
+    │   │   ├── component/
+    │   │   └── screen/
+    │   ├── utils/                   # Utilitários
+    │   ├── App.jsx
+    │   ├── main.jsx                 # Entry point
+    │   └── index.css
+    ├── .env                         # Variáveis de ambiente
     ├── .env.example                 # Exemplo de variáveis de ambiente
+    ├── .firebaserc                  # Configuração Firebase
+    ├── .gitignore
+    ├── coverage/                    # Relatórios de cobertura
+    ├── definConfig
+    ├── eslint.config.js
+    ├── firebase.json
+    ├── index.html
     ├── package.json                 # Dependências npm
+    ├── postcss.config.js
+    ├── setupTests.js
+    ├── sonar-project.properties
+    ├── tailwind.config.js
     └── vite.config.js              # Configuração Vite
 ```
 

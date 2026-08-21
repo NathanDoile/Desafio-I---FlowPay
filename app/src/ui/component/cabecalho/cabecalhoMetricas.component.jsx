@@ -13,7 +13,7 @@ export function CabecalhoMetricas({ periodoSelecionado, setPeriodoSelecionado })
         
         <div className="flex items-center gap-3">
           
-          <button type="button" onClick={() => navigate("/")} className={`flex h-11 w-11 items-center justify-center rounded-xl ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer`}>
+          <button type="button" onClick={() => navigate("/")} className={`flex h-11 w-11 items-center justify-center rounded-xl ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer transition-transform duration-200 hover:-translate-y-1 hover:shadow-md active:translate-y-0`}>
             <LayoutDashboard className="h-6 w-6" aria-hidden="true" />
           </button>
           

@@ -8,7 +8,7 @@ export function CabecalhoTelaIndisponivel(){
 
     return(
         <header className="flex items-center justify-between">
-            <button type="button" onClick={() => navigate("/")} className="flex items-center gap-2 cursor-pointer" aria-label="FlowPay">
+            <button type="button" onClick={() => navigate("/")} className="flex items-center gap-2 cursor-pointer transition-transform duration-200 hover:-translate-y-1 hover:shadow-md active:translate-y-0" aria-label="FlowPay">
 
                 <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${BG_AZUL_ESCURO} text-white`}>
                     <ServerCrash className="h-5 w-5" aria-hidden="true" />

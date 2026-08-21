@@ -12,8 +12,8 @@ export function CabecalhoHome({nomeGerente, data}){
             <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
 
                 <div className="flex items-center gap-3">
-
-                    <button type="button" onClick={() => navigate('/metricas')} className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer`}>
+                    
+                    <button type="button" onClick={() => navigate('/metricas')} className={`flex h-11 w-11 items-center justify-center rounded-lg ${BG_LARANJA} ${TEXTO_PRETO_BG_LARANJA} cursor-pointer transition-transform duration-200 hover:-translate-y-1 hover:shadow-md active:translate-y-0`}>
                         <LayoutGrid className="h-6 w-6" aria-hidden="true" />
                     </button>
 
